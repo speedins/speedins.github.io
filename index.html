@@ -1430,7 +1430,7 @@
 </footer>
 
 <script>
-    // Данные мероприятий - теперь добавляются прямо в HTML через div с классом "event-data"
+    // Данные мероприятий
     let eventsData = [];
 
     // Инициализация при загрузке страницы
@@ -1450,6 +1450,20 @@
         initNavigation();
         initMobileMenu();
         initActiveNavLink();
+        initSmoothScroll();
+        
+        // Анимация при загрузке
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s ease';
+            
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+        
+        // Добавляем стрелки прокрутки
+        addScrollButtons();
     });
 
     // Собираем данные мероприятий из HTML-элементов
@@ -1479,7 +1493,7 @@
         });
     }
 
-    // Функция для получения дефолтных мероприятий (если в HTML нет данных)
+    // Функция для получения дефолтных мероприятий
     function getDefaultEvents() {
         return [
             {
@@ -1511,6 +1525,8 @@
     function initNavigation() {
         const header = document.getElementById('header');
         
+        if (!header) return;
+        
         // Изменение шапки при скролле
         window.addEventListener('scroll', () => {
             if (window.scrollY > 50) {
@@ -1519,19 +1535,91 @@
                 header.classList.remove('scrolled');
             }
         });
+    }
+
+    // Инициализация мобильного меню
+    function initMobileMenu() {
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
         
-        // Плавная прокрутка для ссылок в навигации
-        document.querySelectorAll('.nav-links a[href^="#"]').forEach(anchor => {
+        if (!mobileMenuBtn || !mobileMenu) {
+            console.error('Элементы мобильного меню не найдены');
+            return;
+        }
+        
+        // Открытие/закрытие меню
+        mobileMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            mobileMenu.classList.toggle('active');
+            mobileMenuBtn.innerHTML = mobileMenu.classList.contains('active') 
+                ? '<i class="fas fa-times"></i>' 
+                : '<i class="fas fa-bars"></i>';
+        });
+        
+        // Закрытие меню при клике на ссылку
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                
+                // Закрываем меню
+                mobileMenu.classList.remove('active');
+                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                
+                // Если ссылка на якорь
+                if (targetId.startsWith('#')) {
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                } else if (targetId === 'rating.html') {
+                    // Если ссылка на страницу рейтинга
+                    window.location.href = targetId;
+                }
+            });
+        });
+        
+        // Закрытие меню при клике вне его
+        document.addEventListener('click', (e) => {
+            if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                mobileMenu.classList.remove('active');
+                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            }
+        });
+        
+        // Закрытие меню при нажатии ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+                mobileMenu.classList.remove('active');
+                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            }
+        });
+    }
+
+    // Инициализация плавного скролла
+    function initSmoothScroll() {
+        // Обработка кликов по навигационным ссылкам
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
                 const targetId = this.getAttribute('href');
+                
                 if (targetId === '#') return;
                 
                 const targetElement = document.querySelector(targetId);
                 if (targetElement) {
                     // Закрываем мобильное меню если открыто
                     const mobileMenu = document.getElementById('mobileMenu');
-                    mobileMenu.classList.remove('active');
+                    if (mobileMenu) {
+                        mobileMenu.classList.remove('active');
+                        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+                        if (mobileMenuBtn) {
+                            mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                        }
+                    }
                     
                     // Плавная прокрутка
                     window.scrollTo({
@@ -1543,47 +1631,6 @@
                     updateActiveNavLink(targetId);
                 }
             });
-        });
-    }
-
-    // Инициализация мобильного меню
-    function initMobileMenu() {
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        const mobileMenu = document.getElementById('mobileMenu');
-        
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('active');
-            mobileMenuBtn.innerHTML = mobileMenu.classList.contains('active') 
-                ? '<i class="fas fa-times"></i>' 
-                : '<i class="fas fa-bars"></i>';
-        });
-        
-        // Закрытие меню при клике на ссылку
-        mobileMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.remove('active');
-                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
-                
-                // Для ссылок на якоря
-                if (link.getAttribute('href').startsWith('#')) {
-                    const targetId = link.getAttribute('href');
-                    const targetElement = document.querySelector(targetId);
-                    if (targetElement) {
-                        window.scrollTo({
-                            top: targetElement.offsetTop - 80,
-                            behavior: 'smooth'
-                        });
-                    }
-                }
-            });
-        });
-        
-        // Закрытие меню при клике вне его
-        document.addEventListener('click', (e) => {
-            if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-                mobileMenu.classList.remove('active');
-                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
-            }
         });
     }
 
@@ -1601,6 +1648,8 @@
     function initActiveNavLink() {
         const sections = document.querySelectorAll('section[id]');
         const navLinks = document.querySelectorAll('.nav-links a[href^="#"], .mobile-menu a[href^="#"]');
+        
+        if (sections.length === 0 || navLinks.length === 0) return;
         
         window.addEventListener('scroll', () => {
             let current = '';
@@ -1629,6 +1678,11 @@
         const eventsSelectBtn = document.getElementById('eventsSelectBtn');
         const eventsDropdown = document.getElementById('eventsDropdown');
         const eventGalleryContainer = document.getElementById('eventGalleryContainer');
+        
+        if (!eventsSelectBtn || !eventsDropdown || !eventGalleryContainer) {
+            console.error('Элементы галереи мероприятий не найдены');
+            return;
+        }
         
         let selectedEventId = null;
         
@@ -1666,7 +1720,10 @@
             
             if (event) {
                 // Обновляем текст на кнопке
-                document.getElementById('selectedEventText').textContent = event.name;
+                const selectedEventText = document.getElementById('selectedEventText');
+                if (selectedEventText) {
+                    selectedEventText.textContent = event.name;
+                }
                 
                 // Отображаем галерею мероприятия
                 displayEventGallery(event);
@@ -1788,6 +1845,11 @@
         const modalCaption = document.getElementById('modalCaption');
         const closeModal = document.querySelector('.modal-close');
 
+        if (!modal || !modalImg || !modalCaption || !closeModal) {
+            console.error('Элементы модального окна не найдены');
+            return;
+        }
+
         // Открытие модального окна при клике на сертификат
         document.querySelectorAll('.certificate-item').forEach(item => {
             item.addEventListener('click', function() {
@@ -1824,6 +1886,8 @@
         const modalImg = document.getElementById('modalImage');
         const modalCaption = document.getElementById('modalCaption');
         
+        if (!modal || !modalImg || !modalCaption) return;
+        
         modal.style.display = 'block';
         modalImg.src = src;
         modalImg.style.animation = 'zoomIn 0.3s ease';
@@ -1857,6 +1921,8 @@
     // Reveal анимация для элементов
     function initScrollAnimations() {
         const reveals = document.querySelectorAll('.reveal');
+        if (reveals.length === 0) return;
+        
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry, index) => {
                 if (entry.isIntersecting) {
@@ -1894,7 +1960,7 @@
     }
 
     // Добавляем стрелки прокрутки ко всем секциям
-    document.addEventListener('DOMContentLoaded', () => {
+    function addScrollButtons() {
         const sections = document.querySelectorAll('section');
         
         sections.forEach((section, index) => {
@@ -1908,16 +1974,54 @@
                 section.appendChild(scrollBtn);
             }
         });
-        
-        // Анимация при загрузке
-        window.addEventListener('load', () => {
-            document.body.style.opacity = '0';
-            document.body.style.transition = 'opacity 0.5s ease';
+    }
+
+    // ДОБАВЬТЕ ЭТОТ CSS ДЛЯ ЛУЧШЕЙ РАБОТЫ МОБИЛЬНОГО МЕНЮ
+    document.addEventListener('DOMContentLoaded', function() {
+        // Добавляем стиль для мобильной кнопки меню
+        const style = document.createElement('style');
+        style.textContent = `
+            @media (max-width: 900px) {
+                .mobile-menu-btn {
+                    display: flex !important;
+                    align-items: center;
+                    justify-content: center;
+                    width: 44px;
+                    height: 44px;
+                    background: #f1f5f9;
+                    border-radius: 12px;
+                    border: 2px solid #e2e8f0;
+                    z-index: 1001;
+                }
+                
+                .mobile-menu-btn i {
+                    font-size: 22px;
+                }
+                
+                .mobile-menu-btn:hover {
+                    background: #e2e8f0;
+                }
+                
+                .mobile-menu {
+                    top: 80px;
+                    max-height: calc(100vh - 80px);
+                    overflow-y: auto;
+                    -webkit-overflow-scrolling: touch;
+                }
+                
+                .mobile-menu a {
+                    padding: 12px 15px;
+                    font-size: 15px;
+                }
+            }
             
-            setTimeout(() => {
-                document.body.style.opacity = '1';
-            }, 100);
-        });
+            @media (max-width: 480px) {
+                .mobile-menu {
+                    padding: 15px;
+                }
+            }
+        `;
+        document.head.appendChild(style);
     });
 </script>
 
@@ -1948,3 +2052,4 @@
 
 </body>
 </html>
+
