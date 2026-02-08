@@ -762,22 +762,30 @@
     .rating-table td {
         display: flex;
         justify-content: space-between;
-        padding: 6px 0;
+        padding: 8px 0;
         border: none;
         font-size: 14px;
     }
 
     .rating-table td::before {
         content: attr(data-label);
+        background: #1e1e1e;
+        border-radius: 12px 12px 0 0;
+    padding-top: 14px;
         color: #aaa;
     }
 
     /* Баллы — акцент */
     .rating-table td:last-child {
-        font-weight: bold;
-        color: #4caf50;
-        font-size: 16px;
+        background: #1e1e1e;
+    border-radius: 0 0 12px 12px;
+    padding-bottom: 14px;
+    font-weight: bold;
+    color: #4caf50;
     }
+            .rating-table td {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
 }
 
         @media (max-width: 480px) {
@@ -1592,6 +1600,7 @@
 </script>
 </body>
 </html>
+
 
 
 
