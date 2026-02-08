@@ -1478,16 +1478,17 @@
             .join(' ');
     }
 
-    // Получение пути к фото ученика
-    function getStudentPhoto(fullName) {
-        // Извлекаем фамилию (первое слово)
-        const lastName = fullName.split(' ')[0].toLowerCase();
-        
-        // Формируем путь к фото
-        const photoPath = `${CONFIG.PHOTO_FOLDER}${lastName}${CONFIG.PHOTO_EXTENSION}`;
-        
-        return photoPath;
-    }
+   // Получение пути к фото ученика
+function getStudentPhoto(fullName) {
+    // Извлекаем фамилию (первое слово)
+    const lastName = fullName.split(' ')[0].toLowerCase();
+    
+    // Формируем путь к фото
+    const photoPath = `${CONFIG.PHOTO_FOLDER}${lastName}${CONFIG.PHOTO_EXTENSION}`;
+    
+    console.log(`Путь к фото для ${fullName}: ${photoPath}`);
+    return photoPath;
+}
 
     // Инициализация фильтров
     function initFilters() {
@@ -1569,7 +1570,7 @@
                 <img src="${student.photo}" 
                      alt="${student.name}" 
                      class="student-photo"
-                     onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"120\" height=\"120\" viewBox=\"0 0 120 120\"><rect width=\"120\" height=\"120\" fill=\"%23667eea\"/><text x=\"50%\" y=\"50%\" dy=\".3em\" text-anchor=\"middle\" fill=\"white\" font-size=\"40\" font-family=\"Arial\">${student.name.split(' ')[0].charAt(0)}${student.name.split(' ')[1]?.charAt(0) || ''}</text></svg>'">
+                    onerror="handleImageError(this, '${student.name}')">
                 <h3>${student.name}</h3>
                 <div class="squad-badge">${student.squad}</div>
                 <div class="score">${student.score} баллов</div>
@@ -1611,7 +1612,7 @@
                     <img src="${student.photo}" 
                          alt="${student.name}" 
                          class="student-photo-small"
-                         onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"50\" height=\"50\" viewBox=\"0 0 50 50\"><rect width=\"50\" height=\"50\" fill=\"%23667eea\"/><text x=\"50%\" y=\"50%\" dy=\".3em\" text-anchor=\"middle\" fill=\"white\" font-size=\"18\" font-family=\"Arial\">${student.name.split(' ')[0].charAt(0)}${student.name.split(' ')[1]?.charAt(0) || ''}</text></svg>'">
+                onerror="handleImageError(this, '${student.name}', true)">
                 </td>
                 <td class="name-cell">
                     <h4>${student.name}</h4>
@@ -1624,7 +1625,63 @@
             </tr>
         `).join('');
     }
-
+function handleImageError(imgElement, fullName, isSmall = false, isMobile = false) {
+    imgElement.onerror = null; // Предотвращаем бесконечный цикл
+    
+    const names = fullName.split(' ');
+    const firstName = names[0]?.charAt(0) || '';
+    const lastName = names[1]?.charAt(0) || '';
+    const initials = `${firstName}${lastName}`.toUpperCase();
+    
+    // Разные размеры для разных типов фото
+    let width, height, fontSize;
+    
+    if (isMobile) {
+        width = 50;
+        height = 50;
+        fontSize = 18;
+    } else if (isSmall) {
+        width = 50;
+        height = 50;
+        fontSize = 18;
+    } else {
+        width = 120;
+        height = 120;
+        fontSize = 40;
+    }
+    
+    // Генерация цвета на основе имени
+    function stringToColor(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        
+        const colors = [
+            '#667eea', '#764ba2', '#4facfe', '#00f2fe',
+            '#43e97b', '#38f9d7', '#fa709a', '#fee140',
+            '#f093fb', '#f5576c', '#30cfd0', '#330867'
+        ];
+        
+        return colors[Math.abs(hash) % colors.length];
+    }
+    
+    const color = stringToColor(fullName);
+    
+    // Создаем SVG аватар
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+        <rect width="${width}" height="${height}" fill="${color}" rx="${isMobile ? 25 : width/2}"/>
+        <text x="50%" y="50%" dy=".3em" text-anchor="middle" fill="white" font-size="${fontSize}" font-family="Arial, sans-serif" font-weight="bold">
+            ${initials}
+        </text>
+    </svg>`;
+    
+    // Устанавливаем SVG как источник изображения
+    imgElement.src = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+    
+    // Логируем ошибку для отладки
+    console.log(`Фото не загружено для ${fullName}, создан аватар с инициалами: ${initials}`);
+}
     // Отображение мобильных карточек
     function renderMobileCards() {
         const mobileCardsContainer = document.getElementById('mobileCardsContainer');
@@ -1646,8 +1703,8 @@
                 <img src="${student.photo}" 
                      alt="${student.name}" 
                      class="mobile-photo"
-                     onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"50\" height=\"50\" viewBox=\"0 0 50 50\"><rect width=\"50\" height=\"50\" fill=\"%23667eea\"/><text x=\"50%\" y=\"50%\" dy=\".3em\" text-anchor=\"middle\" fill=\"white\" font-size=\"18\" font-family=\"Arial\">${student.name.split(' ')[0].charAt(0)}${student.name.split(' ')[1]?.charAt(0) || ''}</text></svg>'">
-                <div class="mobile-info">
+                    onerror="handleImageError(this, '${student.name}', false, true)">
+<div class="mobile-info">
                     <div class="mobile-name">${student.name}</div>
                     <div class="mobile-squad">${student.squad}</div>
                 </div>
@@ -1833,4 +1890,5 @@
 </script>
 </body>
 </html>
+
 
