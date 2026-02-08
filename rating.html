@@ -28,7 +28,7 @@
             position: relative;
         }
 
-               /* Навигация */
+        /* Навигация */
         .header {
             position: fixed;
             top: 0;
@@ -129,7 +129,7 @@
             left: 0;
             width: 400%;
             height: 400%;
-            background-image: url('https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=2070');
+            background-image: url('bg1.jpg');
             background-size: 600px;
             background-repeat: repeat;
             opacity: 0.07;
@@ -164,7 +164,7 @@
             width: 100%;
             height: 100%;
             background: linear-gradient(rgba(37, 99, 235, 0.2), rgba(37, 99, 235, 0.1)), 
-                        url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2070') center/cover no-repeat;
+                        url('verx.jpg') center/cover no-repeat;
             z-index: -1;
             clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
         }
@@ -362,6 +362,17 @@
             color: #1f2933;
         }
 
+        .squad-badge {
+            display: inline-block;
+            padding: 6px 15px;
+            background: #dbeafe;
+            color: #2563eb;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+
         .score {
             font-size: 36px;
             font-weight: 700;
@@ -467,20 +478,21 @@
             margin-bottom: 5px;
         }
 
+        .squad-cell {
+            font-weight: 600;
+            color: #2563eb;
+            font-size: 14px;
+            padding: 6px 12px;
+            background: #dbeafe;
+            border-radius: 15px;
+            display: inline-block;
+        }
+
         .score-cell {
             font-weight: 700;
             font-size: 20px;
             color: #1f2933;
         }
-
-        .trend-cell {
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .trend-up { color: #10b981; }
-        .trend-down { color: #ef4444; }
-        .trend-stable { color: #94a3b8; }
 
         /* Статистика */
         .stats-container {
@@ -850,6 +862,13 @@
                 </select>
             </div>
             <div class="filter-group">
+                <label><i class="fas fa-users"></i> Фильтр по отряду</label>
+                <select id="squadFilter">
+                    <option value="all">Все отряды</option>
+                    <!-- Заполняется JavaScript -->
+                </select>
+            </div>
+            <div class="filter-group">
                 <label><i class="fas fa-search"></i> Поиск ученика</label>
                 <input type="text" id="searchInput" placeholder="Введите фамилию...">
             </div>
@@ -893,8 +912,8 @@
                         <th width="80">Место</th>
                         <th width="80">Фото</th>
                         <th>Ученик</th>
+                        <th width="120">Отряд</th>
                         <th width="120">Баллы</th>
-                        <th width="100">Динамика</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
@@ -928,10 +947,10 @@
             </div>
             <div class="stat-card">
                 <div class="stat-icon">
-                    <i class="fas fa-calendar-alt"></i>
+                    <i class="fas fa-users"></i>
                 </div>
-                <div class="stat-value" id="quarter">1</div>
-                <div class="stat-label">Текущая четверть</div>
+                <div class="stat-value" id="squadsCount">0</div>
+                <div class="stat-label">Количество отрядов</div>
             </div>
         </div>
     </div>
@@ -949,620 +968,569 @@
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
     <script>
-    // Данные учеников
-    let studentsData = [];
-    let filteredStudents = [];
+        // Данные учеников
+        let studentsData = [];
+        let filteredStudents = [];
+        let squads = new Set();
 
-    // Конфигурация
-    const CONFIG = {
-        // Используем прямой CSV URL
-        GOOGLE_SHEETS_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSoKvcFGb21qtR1ByKqVm1jFQkltgRF9SQgu03L2DN-aDj0l7B43kVLdfU23wjuzw/pub?gid=840845811&single=true&output=csv',
-        CLASS_NAME: "9А",
-        PHOTO_FOLDER: 'students/',
-        PHOTO_EXTENSION: '.jpg',
-        MAX_SCORE: 500
-    };
+        // Конфигурация
+        const CONFIG = {
+            GOOGLE_SHEETS_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSoKvcFGb21qtR1ByKqVm1jFQkltgRF9SQgu03L2DN-aDj0l7B43kVLdfU23wjuzw/pub?gid=840845811&single=true&output=csv',
+            CLASS_NAME: "9А",
+            PHOTO_FOLDER: 'students/',
+            PHOTO_EXTENSION: '.jpg',
+            MAX_SCORE: 100
+        };
 
-    // Инициализация при загрузке страницы
-    document.addEventListener('DOMContentLoaded', async function() {
-        initNavigation();
-        initMobileMenu();
-        initFilters();
-        await loadStudentsData();
-        updateLastUpdated();
-        initScrollAnimations();
-        
-        // Автообновление каждые 5 минут
-        setInterval(updateData, 5 * 60 * 1000);
-    });
-
-    // Инициализация навигации
-    function initNavigation() {
-        const header = document.getElementById('header');
-        
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', async function() {
+            initNavigation();
+            initMobileMenu();
+            await loadStudentsData();
+            initFilters();
+            updateLastUpdated();
+            initScrollAnimations();
+            
+            // Автообновление каждые 5 минут
+            setInterval(updateData, 5 * 60 * 1000);
         });
-    }
 
-    // Инициализация мобильного меню
-    function initMobileMenu() {
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        const mobileMenu = document.getElementById('mobileMenu');
-        
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('active');
-            mobileMenuBtn.innerHTML = mobileMenu.classList.contains('active') 
-                ? '<i class="fas fa-times"></i>' 
-                : '<i class="fas fa-bars"></i>';
-        });
-        
-        mobileMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.remove('active');
-                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
-            });
-        });
-        
-        document.addEventListener('click', (e) => {
-            if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-                mobileMenu.classList.remove('active');
-                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
-            }
-        });
-    }
-
-    // Reveal анимация
-    function initScrollAnimations() {
-        const reveals = document.querySelectorAll('.reveal');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry, index) => {
-                if (entry.isIntersecting) {
-                    setTimeout(() => {
-                        entry.target.classList.add('show');
-                    }, index * 100);
+        // Инициализация навигации
+        function initNavigation() {
+            const header = document.getElementById('header');
+            
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
                 }
             });
-        }, {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        });
+        }
 
-        reveals.forEach(el => observer.observe(el));
-    }
-
-    // УЛУЧШЕННЫЙ ПАРСИНГ CSV
-    async function loadStudentsData() {
-        showLoading(true);
-        hideError();
-        
-        try {
-            console.log('Загрузка данных из Google Sheets...');
+        // Инициализация мобильного меню
+        function initMobileMenu() {
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
             
-            // Добавляем timestamp для предотвращения кеширования
-            const timestamp = new Date().getTime();
-            const url = `${CONFIG.GOOGLE_SHEETS_URL}&t=${timestamp}`;
-            
-            const response = await fetch(url, {
-                headers: {
-                    'Cache-Control': 'no-cache',
-                    'Pragma': 'no-cache'
-                }
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('active');
+                mobileMenuBtn.innerHTML = mobileMenu.classList.contains('active') 
+                    ? '<i class="fas fa-times"></i>' 
+                    : '<i class="fas fa-bars"></i>';
             });
             
-            if (!response.ok) {
-                throw new Error(`Ошибка сервера: ${response.status}`);
-            }
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.remove('active');
+                    mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                });
+            });
             
-            const csvText = await response.text();
+            document.addEventListener('click', (e) => {
+                if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                    mobileMenu.classList.remove('active');
+                    mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                }
+            });
+        }
+
+        // Reveal анимация
+        function initScrollAnimations() {
+            const reveals = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.classList.add('show');
+                        }, index * 100);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            reveals.forEach(el => observer.observe(el));
+        }
+
+        // ЗАГРУЗКА ДАННЫХ ИЗ GOOGLE SHEETS CSV
+        async function loadStudentsData() {
+            showLoading(true);
+            hideError();
             
-            if (!csvText || csvText.trim().length === 0) {
-                throw new Error('Таблица пустая');
-            }
-            
-            console.log('CSV данные получены, первые 500 символов:', csvText.substring(0, 500));
-            
-            // Разбиваем на строки
-            const rows = csvText.split('\n').map(row => row.trim()).filter(row => row.length > 0);
-            console.log('Всего строк в CSV:', rows.length);
-            
-            if (rows.length < 2) {
-                throw new Error('Слишком мало данных в таблице');
-            }
-            
-            studentsData = [];
-            
-            // Ищем строку с заголовком и данные
-            for (let i = 0; i < rows.length; i++) {
-                const row = rows[i];
-                const cells = parseCSVRow(row);
+            try {
+                console.log('Загрузка данных из Google Sheets...');
                 
-                // Пропускаем пустые строки или строки с заголовками таблицы
-                if (cells.length < 2) continue;
+                // Добавляем timestamp для предотвращения кеширования
+                const timestamp = new Date().getTime();
+                const url = `${CONFIG.GOOGLE_SHEETS_URL}&t=${timestamp}`;
                 
-                // Проверяем, содержит ли строка имя ученика
-                const nameCell = cells[0]?.trim();
-                const scoreCell = cells[1]?.trim();
+                const response = await fetch(url);
                 
-                // Пропускаем строки заголовков
-                if (nameCell && (
-                    nameCell.toLowerCase().includes('фио') ||
-                    nameCell.toLowerCase().includes('ф.и.о') ||
-                    nameCell.toLowerCase().includes('ученик') ||
-                    nameCell.toLowerCase().includes('учащийся') ||
-                    nameCell.toLowerCase().includes('название') ||
-                    nameCell.toLowerCase().includes('мероприятие') ||
-                    nameCell === '1' || // номер строки
-                    nameCell === '№'
-                )) {
-                    console.log('Пропускаем заголовок:', nameCell);
-                    continue;
+                if (!response.ok) {
+                    throw new Error(`Ошибка сервера: ${response.status}`);
                 }
                 
-                // Пропускаем пустые имена
-                if (!nameCell || nameCell === '' || nameCell === '-') {
-                    continue;
+                const csvText = await response.text();
+                
+                if (!csvText || csvText.trim().length === 0) {
+                    throw new Error('Таблица пустая');
                 }
                 
-                // Имя должно содержать хотя бы 2 символа
-                if (nameCell.length < 2) {
-                    continue;
+                console.log('CSV данные получены, первые 500 символов:', csvText.substring(0, 500));
+                
+                // Разбиваем на строки
+                const rows = csvText.split('\n').map(row => row.trim()).filter(row => row.length > 0);
+                console.log('Всего строк в CSV:', rows.length);
+                
+                if (rows.length < 2) {
+                    throw new Error('Слишком мало данных в таблице');
                 }
                 
-                // Очищаем имя
-                const name = cleanName(nameCell);
+                studentsData = [];
+                squads = new Set();
                 
-                // Парсим баллы
-                let score = 0;
-                if (scoreCell) {
-                    // Пробуем разные форматы чисел
-                    const cleanScore = scoreCell.replace(/[^\d.,-]/g, '');
-                    score = parseFloat(cleanScore.replace(',', '.')) || 0;
+                // Поиск строки с заголовками (ожидаем структуру: ФИО, Отряд, Баллы)
+                let dataStartIndex = 0;
+                let headerFound = false;
+                
+                // Ищем строку с заголовками
+                for (let i = 0; i < Math.min(10, rows.length); i++) {
+                    const row = rows[i].toLowerCase();
+                    // Проверяем, содержит ли строка ожидаемые заголовки
+                    if ((row.includes('фио') || row.includes('ф.и.о') || row.includes('ученик') || row.includes('учащий')) &&
+                        (row.includes('отряд') || row.includes('отр.')) &&
+                        (row.includes('балл') || row.includes('очки') || row.includes('оценка') || row.includes('рейтинг'))) {
+                        dataStartIndex = i + 1;
+                        headerFound = true;
+                        console.log(`Заголовки найдены в строке ${i}, данные начинаются с ${dataStartIndex}`);
+                        break;
+                    }
                 }
                 
-                // Проверяем, что это действительно ученик (имя содержит фамилию и имя)
-                if (name.split(' ').length < 2) {
-                    console.log('Пропускаем, не похоже на ФИО:', name);
-                    continue;
+                // Если заголовки не найдены, начинаем с 5 строки (A5)
+                if (!headerFound) {
+                    dataStartIndex = 4; // A5 строка (индекс 4, т.к. массив начинается с 0)
+                    console.log('Заголовки не найдены, начинаем с 5 строки');
                 }
                 
-                // Добавляем ученика
-                studentsData.push({
-                    id: studentsData.length + 1,
-                    name: name,
-                    score: Math.round(score),
-                    photo: getStudentPhoto(name),
-                    trend: calculateTrend(score),
-                    class: CONFIG.CLASS_NAME
+                // Обрабатываем данные начиная с найденного индекса
+                for (let i = dataStartIndex; i < rows.length; i++) {
+                    const row = rows[i];
+                    
+                    // Разделяем строку (сначала пробуем по запятой)
+                    let cells = row.split(',').map(cell => cell.trim());
+                    
+                    // Если в строке мало ячеек, пробуем разделить по табу или вертикальной черте
+                    if (cells.length < 3) {
+                        cells = row.split(/[\t|]/).map(cell => cell.trim());
+                    }
+                    
+                    if (cells.length < 3) {
+                        console.log(`Пропускаем строку ${i}: недостаточно ячеек`, cells);
+                        continue;
+                    }
+                    
+                    const nameCell = cells[0];
+                    const squadCell = cells[1];
+                    const scoreCell = cells[2];
+                    
+                    // Пропускаем пустые строки или строки без имени
+                    if (!nameCell || nameCell === '' || nameCell === '-' || nameCell.toLowerCase() === 'фио') {
+                        continue;
+                    }
+                    
+                    // Очищаем имя
+                    const name = cleanName(nameCell);
+                    
+                    // Проверяем, что это действительно ФИО (должно содержать хотя бы 2 слова)
+                    if (name.split(' ').length < 2) {
+                        console.log(`Пропускаем, не похоже на ФИО: ${name}`);
+                        continue;
+                    }
+                    
+                    // Получаем отряд
+                    let squad = 'Без отряда';
+                    if (squadCell && squadCell.trim() !== '') {
+                        squad = squadCell.trim();
+                    }
+                    
+                    // Добавляем отряд в список отрядов
+                    squads.add(squad);
+                    
+                    // Парсим баллы
+                    let score = 0;
+                    if (scoreCell) {
+                        // Убираем все нечисловые символы кроме точки и минуса
+                        const cleanScore = scoreCell.replace(/[^\d.,-]/g, '');
+                        score = parseFloat(cleanScore.replace(',', '.')) || 0;
+                    }
+                    
+                    // Округляем до целого
+                    score = Math.round(score);
+                    
+                    // Добавляем ученика
+                    studentsData.push({
+                        id: studentsData.length + 1,
+                        name: name,
+                        squad: squad,
+                        score: score,
+                        photo: getStudentPhoto(name),
+                        class: CONFIG.CLASS_NAME
+                    });
+                    
+                    console.log(`Добавлен ученик: ${name} - ${score} баллов, Отряд: ${squad}`);
+                }
+                
+                console.log(`Загружено ${studentsData.length} учеников`);
+                console.log('Отряды:', Array.from(squads));
+                
+                if (studentsData.length === 0) {
+                    throw new Error('Не удалось найти данные учеников в таблице');
+                }
+                
+                // Сортируем по баллам (по убыванию)
+                studentsData.sort((a, b) => b.score - a.score);
+                
+                // Присваиваем ранги
+                studentsData.forEach((student, index) => {
+                    student.rank = index + 1;
                 });
                 
-                console.log(`Добавлен ученик ${studentsData.length}: ${name} - ${score} баллов`);
+                filteredStudents = [...studentsData];
+                
+                // Обновляем отображение
+                updateSquadFilter();
+                renderTopThree();
+                renderTable();
+                updateStats();
+                showLoading(false);
+                
+                // Уведомление об успехе
+                Toastify({
+                    text: `✅ Загружено ${studentsData.length} учеников`,
+                    duration: 3000,
+                    backgroundColor: "#10b981"
+                }).showToast();
+                
+            } catch (error) {
+                console.error('Ошибка загрузки данных:', error);
+                showError(`Не удалось загрузить данные: ${error.message}`);
+                showLoading(false);
+            }
+        }
+
+        // Обновление фильтра отрядов
+        function updateSquadFilter() {
+            const squadFilter = document.getElementById('squadFilter');
+            const currentValue = squadFilter.value;
+            
+            // Очищаем и добавляем "Все отряды"
+            squadFilter.innerHTML = '<option value="all">Все отряды</option>';
+            
+            // Добавляем отряды в алфавитном порядке
+            Array.from(squads).sort().forEach(squad => {
+                const option = document.createElement('option');
+                option.value = squad;
+                option.textContent = squad;
+                squadFilter.appendChild(option);
+            });
+            
+            // Восстанавливаем выбранное значение
+            squadFilter.value = currentValue;
+        }
+
+        // Очистка имени от лишних символов
+        function cleanName(rawName) {
+            return rawName
+                .replace(/["'«»]/g, '') // Убираем кавычки
+                .replace(/\s+/g, ' ') // Заменяем множественные пробелы на один
+                .trim()
+                .split(' ')
+                .map(word => {
+                    if (word.length === 0) return '';
+                    // Проверяем, все ли буквы в верхнем регистре (как в официальных документах)
+                    if (word === word.toUpperCase()) {
+                        // Оставляем как есть (все заглавные) или преобразуем к нормальному виду
+                        return word.charAt(0) + word.slice(1).toLowerCase();
+                    }
+                    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+                })
+                .join(' ');
+        }
+
+        // Получение пути к фото ученика
+        function getStudentPhoto(fullName) {
+            // Извлекаем фамилию (первое слово)
+            const lastName = fullName.split(' ')[0].toLowerCase();
+            
+            // Формируем путь к фото
+            const photoPath = `${CONFIG.PHOTO_FOLDER}${lastName}${CONFIG.PHOTO_EXTENSION}`;
+            
+            return photoPath;
+        }
+
+        // Инициализация фильтров
+        function initFilters() {
+            document.getElementById('sortFilter').addEventListener('change', applyFilters);
+            document.getElementById('squadFilter').addEventListener('change', applyFilters);
+            document.getElementById('searchInput').addEventListener('input', applyFilters);
+        }
+
+        // Применение фильтров
+        function applyFilters() {
+            const sortFilter = document.getElementById('sortFilter').value;
+            const squadFilter = document.getElementById('squadFilter').value;
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            
+            // Фильтрация
+            filteredStudents = studentsData.filter(student => {
+                // Фильтр по отряду
+                const squadMatch = squadFilter === 'all' || student.squad === squadFilter;
+                
+                // Фильтр по поиску
+                const searchMatch = !searchQuery || student.name.toLowerCase().includes(searchQuery);
+                
+                return squadMatch && searchMatch;
+            });
+            
+            // Сортировка
+            switch(sortFilter) {
+                case 'score_desc':
+                    filteredStudents.sort((a, b) => b.score - a.score);
+                    break;
+                case 'score_asc':
+                    filteredStudents.sort((a, b) => a.score - b.score);
+                    break;
+                case 'name_asc':
+                    filteredStudents.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'name_desc':
+                    filteredStudents.sort((a, b) => b.name.localeCompare(a.name));
+                    break;
             }
             
-            console.log(`Загружено ${studentsData.length} учеников`);
+            // Обновление рангов
+            filteredStudents.forEach((student, index) => {
+                student.filteredRank = index + 1;
+            });
             
-            if (studentsData.length === 0) {
-                // Пробуем альтернативный парсинг
-                await tryAlternativeParsing(csvText);
+            // Обновляем отображение
+            renderTopThree();
+            renderTable();
+            updateStats();
+        }
+
+        // Отображение топ-3 учеников
+        function renderTopThree() {
+            const topThreeContainer = document.getElementById('topThree');
+            const topStudents = filteredStudents.slice(0, 3);
+            
+            if (topStudents.length === 0) {
+                topThreeContainer.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #64748b;">
+                        <i class="fas fa-users" style="font-size: 60px; margin-bottom: 20px;"></i>
+                        <h3>Нет данных для отображения</h3>
+                        <p>Загрузите данные из таблицы</p>
+                    </div>
+                `;
                 return;
             }
             
-            processStudentsData();
-            
-        } catch (error) {
-            console.error('Ошибка загрузки данных:', error);
-            showError(`Не удалось загрузить данные: ${error.message}. Проверьте формат таблицы.`);
-            showLoading(false);
-        }
-    }
-
-    // Альтернативный метод парсинга
-    async function tryAlternativeParsing(csvText) {
-        console.log('Пробуем альтернативный парсинг...');
-        
-        const rows = csvText.split('\n').map(row => row.trim());
-        studentsData = [];
-        
-        // Проходим по всем строкам
-        for (let i = 0; i < rows.length; i++) {
-            const row = rows[i];
-            
-            // Пробуем разные разделители
-            const cells = row.split(/[,\t|]/).map(cell => cell.trim());
-            
-            // Ищем строки, содержащие русские буквы (фамилии)
-            const russianLettersRegex = /[А-Яа-яЁё]/;
-            
-            if (cells.length >= 2 && russianLettersRegex.test(cells[0])) {
-                const nameCell = cells[0];
-                const scoreCell = cells[1] || cells[2] || '0';
-                
-                // Пропускаем заголовки
-                if (nameCell.toLowerCase().includes('фио') || 
-                    nameCell.toLowerCase().includes('название')) {
-                    continue;
-                }
-                
-                const name = cleanName(nameCell);
-                
-                if (name.split(' ').length < 2) {
-                    continue;
-                }
-                
-                let score = 0;
-                if (scoreCell) {
-                    const cleanScore = scoreCell.replace(/[^\d.,-]/g, '');
-                    score = parseFloat(cleanScore.replace(',', '.')) || 0;
-                }
-                
-                studentsData.push({
-                    id: studentsData.length + 1,
-                    name: name,
-                    score: Math.round(score),
-                    photo: getStudentPhoto(name),
-                    trend: calculateTrend(score),
-                    class: CONFIG.CLASS_NAME
-                });
-            }
-        }
-        
-        if (studentsData.length === 0) {
-            throw new Error('Не удалось найти данные учеников в таблице');
-        }
-        
-        processStudentsData();
-    }
-
-    // Обработка данных учеников
-    function processStudentsData() {
-        // Сортируем по баллам (по убыванию)
-        studentsData.sort((a, b) => b.score - a.score);
-        
-        // Присваиваем ранги
-        studentsData.forEach((student, index) => {
-            student.rank = index + 1;
-        });
-        
-        filteredStudents = [...studentsData];
-        
-        // Обновляем отображение
-        renderTopThree();
-        renderTable();
-        updateStats();
-        showLoading(false);
-        
-        // Уведомление об успехе
-        Toastify({
-            text: `✅ Загружено ${studentsData.length} учеников`,
-            duration: 3000,
-            backgroundColor: "#10b981"
-        }).showToast();
-    }
-
-    // Парсинг CSV строки с учетом кавычек
-    function parseCSVRow(row) {
-        const result = [];
-        let current = '';
-        let inQuotes = false;
-        
-        for (let i = 0; i < row.length; i++) {
-            const char = row[i];
-            
-            if (char === '"') {
-                inQuotes = !inQuotes;
-            } else if (char === ',' && !inQuotes) {
-                result.push(current);
-                current = '';
-            } else {
-                current += char;
-            }
-        }
-        
-        result.push(current);
-        return result.map(cell => cell.trim());
-    }
-
-    // Очистка имени от лишних символов
-    function cleanName(rawName) {
-        return rawName
-            .replace(/["'«»]/g, '') // Убираем кавычки
-            .replace(/\s+/g, ' ') // Заменяем множественные пробелы на один
-            .trim()
-            .split(' ')
-            .map(word => {
-                if (word.length === 0) return '';
-                // Проверяем, все ли буквы в верхнем регистре (как в официальных документах)
-                if (word === word.toUpperCase()) {
-                    // Оставляем как есть (все заглавные) или преобразуем к нормальному виду
-                    return word.charAt(0) + word.slice(1).toLowerCase();
-                }
-                return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-            })
-            .join(' ');
-    }
-
-    // Получение пути к фото ученика
-    function getStudentPhoto(fullName) {
-        // Извлекаем фамилию (первое слово)
-        const lastName = fullName.split(' ')[0].toLowerCase();
-        
-        // Формируем путь к фото
-        const photoPath = `${CONFIG.PHOTO_FOLDER}${lastName}${CONFIG.PHOTO_EXTENSION}`;
-        
-        return photoPath;
-    }
-
-    // Расчет тренда на основе баллов
-    function calculateTrend(score) {
-        // Для реального приложения здесь должна быть логика сравнения с предыдущими результатами
-        // Пока используем случайный тренд
-        const random = Math.random();
-        if (random < 0.4) return 'up';
-        if (random < 0.7) return 'stable';
-        return 'down';
-    }
-
-    // Инициализация фильтров
-    function initFilters() {
-        document.getElementById('sortFilter').addEventListener('change', applyFilters);
-        document.getElementById('searchInput').addEventListener('input', applyFilters);
-    }
-
-    // Применение фильтров
-    function applyFilters() {
-        const sortFilter = document.getElementById('sortFilter').value;
-        const searchQuery = document.getElementById('searchInput').value.toLowerCase();
-        
-        // Фильтрация по поиску
-        filteredStudents = studentsData.filter(student => {
-            return !searchQuery || student.name.toLowerCase().includes(searchQuery);
-        });
-        
-        // Сортировка
-        switch(sortFilter) {
-            case 'score_desc':
-                filteredStudents.sort((a, b) => b.score - a.score);
-                break;
-            case 'score_asc':
-                filteredStudents.sort((a, b) => a.score - b.score);
-                break;
-            case 'name_asc':
-                filteredStudents.sort((a, b) => a.name.localeCompare(b.name));
-                break;
-            case 'name_desc':
-                filteredStudents.sort((a, b) => b.name.localeCompare(a.name));
-                break;
-        }
-        
-        // Обновление рангов
-        filteredStudents.forEach((student, index) => {
-            student.filteredRank = index + 1;
-        });
-        
-        // Обновляем отображение
-        renderTopThree();
-        renderTable();
-        updateStats();
-    }
-
-    // Отображение топ-3 учеников
-    function renderTopThree() {
-        const topThreeContainer = document.getElementById('topThree');
-        const topStudents = filteredStudents.slice(0, 3);
-        
-        if (topStudents.length === 0) {
-            topThreeContainer.innerHTML = `
-                <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #64748b;">
-                    <i class="fas fa-users" style="font-size: 60px; margin-bottom: 20px;"></i>
-                    <h3>Нет данных для отображения</h3>
-                    <p>Загрузите данные из таблицы</p>
-                </div>
-            `;
-            return;
-        }
-        
-        topThreeContainer.innerHTML = topStudents.map((student, index) => `
-            <div class="top-card ${index === 0 ? 'first' : index === 1 ? 'second' : 'third'}">
-                <div class="rank-badge">${index + 1}</div>
-                <img src="${student.photo}" 
-                     alt="${student.name}" 
-                     class="student-photo"
-                     onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"120\" height=\"120\" viewBox=\"0 0 120 120\"><rect width=\"120\" height=\"120\" fill=\"%23667eea\"/><text x=\"50%\" y=\"50%\" dy=\".3em\" text-anchor=\"middle\" fill=\"white\" font-size=\"40\" font-family=\"Arial\">${student.name.split(' ')[0].charAt(0)}${student.name.split(' ')[1]?.charAt(0) || ''}</text></svg>'">
-                <h3>${student.name}</h3>
-                <div class="score">${student.score} баллов</div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: ${Math.min((student.score / CONFIG.MAX_SCORE) * 100, 100)}%"></div>
-                </div>
-                <div class="trend-cell ${student.trend === 'up' ? 'trend-up' : student.trend === 'down' ? 'trend-down' : 'trend-stable'}" style="margin-top: 10px;">
-                    ${student.trend === 'up' ? '↑ Повышение' : student.trend === 'down' ? '↓ Снижение' : '→ Стабильно'}
-                </div>
-            </div>
-        `).join('');
-    }
-
-    // Отображение таблицы
-    function renderTable() {
-        const tableBody = document.getElementById('tableBody');
-        const totalStudents = document.getElementById('totalStudents');
-        
-        totalStudents.textContent = filteredStudents.length;
-        
-        if (filteredStudents.length === 0) {
-            tableBody.innerHTML = `
-                <tr>
-                    <td colspan="5" style="text-align: center; padding: 40px; color: #64748b;">
-                        <i class="fas fa-search" style="font-size: 40px; margin-bottom: 10px;"></i>
-                        <p>Не найдено учеников по вашему запросу</p>
-                        <button onclick="loadStudentsData()" class="filter-btn" style="margin-top: 20px;">
-                            <i class="fas fa-redo"></i> Загрузить данные
-                        </button>
-                    </td>
-                </tr>
-            `;
-            return;
-        }
-        
-        tableBody.innerHTML = filteredStudents.map(student => `
-            <tr>
-                <td class="rank-cell">${student.filteredRank || student.rank}</td>
-                <td class="photo-cell">
+            topThreeContainer.innerHTML = topStudents.map((student, index) => `
+                <div class="top-card ${index === 0 ? 'first' : index === 1 ? 'second' : 'third'}">
+                    <div class="rank-badge">${index + 1}</div>
                     <img src="${student.photo}" 
                          alt="${student.name}" 
-                         class="student-photo-small"
-                         onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"50\" height=\"50\" viewBox=\"0 0 50 50\"><rect width=\"50\" height=\"50\" fill=\"%23667eea\"/><text x=\"50%\" y=\"50%\" dy=\".3em\" text-anchor=\"middle\" fill=\"white\" font-size=\"18\" font-family=\"Arial\">${student.name.split(' ')[0].charAt(0)}${student.name.split(' ')[1]?.charAt(0) || ''}</text></svg>'">
-                </td>
-                <td class="name-cell">
-                    <h4>${student.name}</h4>
-                    <div class="class-cell">${student.class} класс</div>
-                </td>
-                <td class="score-cell">${student.score}</td>
-                <td class="trend-cell ${student.trend === 'up' ? 'trend-up' : student.trend === 'down' ? 'trend-down' : 'trend-stable'}">
-                    ${student.trend === 'up' ? '↑ Повышение' : student.trend === 'down' ? '↓ Снижение' : '→ Стабильно'}
-                </td>
-            </tr>
-        `).join('');
-    }
+                         class="student-photo"
+                         onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"120\" height=\"120\" viewBox=\"0 0 120 120\"><rect width=\"120\" height=\"120\" fill=\"%23667eea\"/><text x=\"50%\" y=\"50%\" dy=\".3em\" text-anchor=\"middle\" fill=\"white\" font-size=\"40\" font-family=\"Arial\">${student.name.split(' ')[0].charAt(0)}${student.name.split(' ')[1]?.charAt(0) || ''}</text></svg>'">
+                    <h3>${student.name}</h3>
+                    <div class="squad-badge">${student.squad}</div>
+                    <div class="score">${student.score} баллов</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${Math.min((student.score / CONFIG.MAX_SCORE) * 100, 100)}%"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
 
-    // Обновление статистики
-    function updateStats() {
-        const avgScore = document.getElementById('avgScore');
-        const totalParticipants = document.getElementById('totalParticipants');
-        const topScore = document.getElementById('topScore');
-        const quarter = document.getElementById('quarter');
-        
-        if (filteredStudents.length > 0) {
-            const scores = filteredStudents.map(s => s.score);
-            const average = scores.reduce((a, b) => a + b, 0) / scores.length;
-            const maxScore = Math.max(...scores);
+        // Отображение таблицы
+        function renderTable() {
+            const tableBody = document.getElementById('tableBody');
+            const totalStudents = document.getElementById('totalStudents');
             
-            avgScore.textContent = average.toFixed(1);
-            totalParticipants.textContent = filteredStudents.length;
-            topScore.textContent = maxScore;
+            totalStudents.textContent = filteredStudents.length;
             
-            // Определяем текущую четверть
+            if (filteredStudents.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 40px; color: #64748b;">
+                            <i class="fas fa-search" style="font-size: 40px; margin-bottom: 10px;"></i>
+                            <p>Не найдено учеников по вашему запросу</p>
+                            <button onclick="loadStudentsData()" class="filter-btn" style="margin-top: 20px;">
+                                <i class="fas fa-redo"></i> Загрузить данные
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tableBody.innerHTML = filteredStudents.map(student => `
+                <tr>
+                    <td class="rank-cell">${student.filteredRank || student.rank}</td>
+                    <td class="photo-cell">
+                        <img src="${student.photo}" 
+                             alt="${student.name}" 
+                             class="student-photo-small"
+                             onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"50\" height=\"50\" viewBox=\"0 0 50 50\"><rect width=\"50\" height=\"50\" fill=\"%23667eea\"/><text x=\"50%\" y=\"50%\" dy=\".3em\" text-anchor=\"middle\" fill=\"white\" font-size=\"18\" font-family=\"Arial\">${student.name.split(' ')[0].charAt(0)}${student.name.split(' ')[1]?.charAt(0) || ''}</text></svg>'">
+                    </td>
+                    <td class="name-cell">
+                        <h4>${student.name}</h4>
+                        <div class="class-cell">${student.class} класс</div>
+                    </td>
+                    <td>
+                        <span class="squad-cell">${student.squad}</span>
+                    </td>
+                    <td class="score-cell">${student.score}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Обновление статистики
+        function updateStats() {
+            const avgScore = document.getElementById('avgScore');
+            const totalParticipants = document.getElementById('totalParticipants');
+            const topScore = document.getElementById('topScore');
+            const squadsCount = document.getElementById('squadsCount');
+            
+            if (filteredStudents.length > 0) {
+                const scores = filteredStudents.map(s => s.score);
+                const average = scores.reduce((a, b) => a + b, 0) / scores.length;
+                const maxScore = Math.max(...scores);
+                
+                // Подсчет уникальных отрядов в отфильтрованных данных
+                const uniqueSquads = new Set(filteredStudents.map(s => s.squad));
+                
+                avgScore.textContent = average.toFixed(1);
+                totalParticipants.textContent = filteredStudents.length;
+                topScore.textContent = maxScore;
+                squadsCount.textContent = uniqueSquads.size;
+            } else {
+                avgScore.textContent = "0.0";
+                totalParticipants.textContent = "0";
+                topScore.textContent = "0";
+                squadsCount.textContent = "0";
+            }
+        }
+
+        // Обновление времени последнего обновления
+        function updateLastUpdated() {
             const now = new Date();
-            const month = now.getMonth() + 1;
-            if (month >= 9 && month <= 11) quarter.textContent = "1";
-            else if (month >= 12 && month <= 2) quarter.textContent = "2";
-            else if (month >= 3 && month <= 5) quarter.textContent = "3";
-            else quarter.textContent = "4";
-        } else {
-            avgScore.textContent = "0.0";
-            totalParticipants.textContent = "0";
-            topScore.textContent = "0";
-        }
-    }
-
-    // Обновление времени последнего обновления
-    function updateLastUpdated() {
-        const now = new Date();
-        const timeString = now.toLocaleTimeString('ru-RU', { 
-            hour: '2-digit', 
-            minute: '2-digit',
-            second: '2-digit'
-        });
-        const dateString = now.toLocaleDateString('ru-RU', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
-        });
-        
-        document.getElementById('lastUpdateTime').textContent = `${dateString} ${timeString}`;
-    }
-
-    // Обновление данных
-    async function updateData() {
-        showLoading(true);
-        
-        try {
-            await loadStudentsData();
-            updateLastUpdated();
-            
-            Toastify({
-                text: "Данные успешно обновлены",
-                duration: 3000,
-                backgroundColor: "#10b981"
-            }).showToast();
-            
-        } catch (error) {
-            console.error('Ошибка обновления:', error);
-            Toastify({
-                text: `Ошибка: ${error.message}`,
-                duration: 5000,
-                backgroundColor: "#ef4444"
-            }).showToast();
-            showLoading(false);
-        }
-    }
-
-    // Управление отображением загрузки
-    function showLoading(isLoading) {
-        const loading = document.getElementById('loadingTable');
-        const table = document.getElementById('ratingTable');
-        const errorContainer = document.getElementById('errorContainer');
-        
-        if (isLoading) {
-            loading.style.display = 'block';
-            table.style.display = 'none';
-            errorContainer.style.display = 'none';
-        } else {
-            loading.style.display = 'none';
-            table.style.display = 'table';
-        }
-    }
-
-    // Показать ошибку
-    function showError(message) {
-        const errorContainer = document.getElementById('errorContainer');
-        const errorMessage = document.getElementById('errorMessage');
-        const table = document.getElementById('ratingTable');
-        const loading = document.getElementById('loadingTable');
-        
-        errorMessage.textContent = message;
-        errorContainer.style.display = 'block';
-        table.style.display = 'none';
-        loading.style.display = 'none';
-        
-        // Очищаем данные
-        studentsData = [];
-        filteredStudents = [];
-        renderTopThree();
-        renderTable();
-        updateStats();
-    }
-
-    // Скрыть ошибку
-    function hideError() {
-        const errorContainer = document.getElementById('errorContainer');
-        errorContainer.style.display = 'none';
-    }
-
-    // ДЕБАГ: функция для просмотра сырых данных CSV
-    async function debugCSV() {
-        try {
-            const response = await fetch(CONFIG.GOOGLE_SHEETS_URL);
-            const csvText = await response.text();
-            console.log('Сырые CSV данные:', csvText);
-            
-            // Показать первые 5 строк в консоли
-            const rows = csvText.split('\n').slice(0, 10);
-            rows.forEach((row, i) => {
-                console.log(`Строка ${i}:`, row);
+            const timeString = now.toLocaleTimeString('ru-RU', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            const dateString = now.toLocaleDateString('ru-RU', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
             });
             
-            alert('Проверьте консоль браузера (F12) для просмотра данных');
-        } catch (error) {
-            console.error('Ошибка отладки:', error);
-            alert('Ошибка загрузки данных для отладки');
+            document.getElementById('lastUpdateTime').textContent = `${dateString} ${timeString}`;
         }
-    }
 
-    // Добавьте эту функцию кнопке для отладки
-    // В HTML можно добавить: <button onclick="debugCSV()">Отладка CSV</button>
-</script>
+        // Обновление данных
+        async function updateData() {
+            showLoading(true);
+            
+            try {
+                await loadStudentsData();
+                updateLastUpdated();
+                
+                Toastify({
+                    text: "Данные успешно обновлены",
+                    duration: 3000,
+                    backgroundColor: "#10b981"
+                }).showToast();
+                
+            } catch (error) {
+                console.error('Ошибка обновления:', error);
+                Toastify({
+                    text: `Ошибка: ${error.message}`,
+                    duration: 5000,
+                    backgroundColor: "#ef4444"
+                }).showToast();
+                showLoading(false);
+            }
+        }
+
+        // Управление отображением загрузки
+        function showLoading(isLoading) {
+            const loading = document.getElementById('loadingTable');
+            const table = document.getElementById('ratingTable');
+            const errorContainer = document.getElementById('errorContainer');
+            
+            if (isLoading) {
+                loading.style.display = 'block';
+                table.style.display = 'none';
+                errorContainer.style.display = 'none';
+            } else {
+                loading.style.display = 'none';
+                table.style.display = 'table';
+            }
+        }
+
+        // Показать ошибку
+        function showError(message) {
+            const errorContainer = document.getElementById('errorContainer');
+            const errorMessage = document.getElementById('errorMessage');
+            const table = document.getElementById('ratingTable');
+            const loading = document.getElementById('loadingTable');
+            
+            errorMessage.textContent = message;
+            errorContainer.style.display = 'block';
+            table.style.display = 'none';
+            loading.style.display = 'none';
+            
+            // Очищаем данные
+            studentsData = [];
+            filteredStudents = [];
+            squads = new Set();
+            updateSquadFilter();
+            renderTopThree();
+            renderTable();
+            updateStats();
+        }
+
+        // Скрыть ошибку
+        function hideError() {
+            const errorContainer = document.getElementById('errorContainer');
+            errorContainer.style.display = 'none';
+        }
+
+        // Функция для отладки CSV
+        async function debugCSV() {
+            try {
+                const response = await fetch(CONFIG.GOOGLE_SHEETS_URL);
+                const csvText = await response.text();
+                console.log('Сырые CSV данные:', csvText);
+                
+                // Показать первые 10 строк в консоли
+                const rows = csvText.split('\n').slice(0, 10);
+                console.log('Первые 10 строк CSV:');
+                rows.forEach((row, i) => {
+                    console.log(`Строка ${i}:`, row);
+                });
+                
+                alert('Проверьте консоль браузера (F12) для просмотра данных');
+            } catch (error) {
+                console.error('Ошибка отладки:', error);
+                alert('Ошибка загрузки данных для отладки');
+            }
+        }
+    </script>
 </body>
 </html>
