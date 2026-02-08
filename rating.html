@@ -700,7 +700,104 @@
             filter: blur(0);
         }
 
-        /* Адаптивность */
+        /* МОБИЛЬНЫЕ КАРТОЧКИ - ОЧЕНЬ КРАСИВЫЕ */
+        .mobile-cards-container {
+            display: none;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .mobile-student-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid #f1f5f9;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mobile-student-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+
+        .mobile-student-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, #2563eb, #3b82f6);
+            border-radius: 4px 0 0 4px;
+        }
+
+        .mobile-rank {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2563eb;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .mobile-photo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #e2e8f0;
+        }
+
+        .mobile-info {
+            flex: 1;
+        }
+
+        .mobile-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2933;
+            margin-bottom: 4px;
+        }
+
+        .mobile-squad {
+            display: inline-block;
+            padding: 4px 10px;
+            background: #dbeafe;
+            color: #2563eb;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .mobile-score {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2563eb;
+            text-align: right;
+            min-width: 60px;
+            background: linear-gradient(135deg, #f0f5ff, #e6f0ff);
+            padding: 6px 12px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .mobile-score-label {
+            font-size: 10px;
+            color: #64748b;
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        /* Медиа-запросы */
         @media (max-width: 1100px) {
             .top-three {
                 grid-template-columns: 1fr;
@@ -732,61 +829,94 @@
                 display: none;
             }
             .mobile-menu-btn {
-                display: block;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 44px;
+                height: 44px;
+                background: #f1f5f9;
+                border-radius: 12px;
+                border: 2px solid #e2e8f0;
+                z-index: 1001;
             }
+            
+            .mobile-menu-btn i {
+                font-size: 22px;
+            }
+            
+            .mobile-menu-btn:hover {
+                background: #e2e8f0;
+            }
+            
+            .mobile-menu {
+                top: 80px;
+                max-height: calc(100vh - 80px);
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .mobile-menu a {
+                padding: 12px 15px;
+                font-size: 15px;
+            }
+            
             .nav-container {
                 padding: 0 20px;
             }
         }
 
-        @media (max-width: 600px) {
-
-    .rating-table,
-    .rating-table thead {
-        display: none;
-    }
-
-    .rating-table tbody {
-        display: block;
-    }
-
-    .rating-table tr {
-        display: block;
-        background: #1e1e1e;
-        margin-bottom: 12px;
-        padding: 14px;
-        border-radius: 12px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    }
-
-    .rating-table td {
-        display: flex;
-        justify-content: space-between;
-        padding: 8px 0;
-        border: none;
-        font-size: 14px;
-    }
-
-    .rating-table td::before {
-        content: attr(data-label);
-        background: #1e1e1e;
-        border-radius: 12px 12px 0 0;
-    padding-top: 14px;
-        color: #aaa;
-    }
-
-    /* Баллы — акцент */
-    .rating-table td:last-child {
-        background: #1e1e1e;
-    border-radius: 0 0 12px 12px;
-    padding-bottom: 14px;
-    font-weight: bold;
-    color: #4caf50;
-    }
-            .rating-table td {
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
-}
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 42px;
+            }
+            .rating-table-container {
+                padding: 20px;
+            }
+            
+            /* Прячем обычную таблицу на мобильных */
+            .rating-table {
+                display: none;
+            }
+            
+            /* Показываем карточки на мобильных */
+            .mobile-cards-container {
+                display: grid;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            .hero-container {
+                padding: 0 20px;
+            }
+            .rating-container {
+                padding: 0 20px 80px;
+            }
+            
+            /* Обновляем стили для мобильных карточек */
+            .mobile-student-card {
+                padding: 18px;
+            }
+            
+            .mobile-rank {
+                font-size: 22px;
+                min-width: 35px;
+            }
+            
+            .mobile-photo {
+                width: 55px;
+                height: 55px;
+            }
+            
+            .mobile-name {
+                font-size: 15px;
+            }
+            
+            .mobile-score {
+                font-size: 18px;
+                padding: 5px 10px;
+            }
+        }
 
         @media (max-width: 480px) {
             .hero-content h1 {
@@ -804,6 +934,39 @@
             .filter-btn {
                 width: 100%;
                 justify-content: center;
+            }
+            
+            .mobile-student-card {
+                padding: 16px;
+                gap: 12px;
+            }
+            
+            .mobile-rank {
+                font-size: 20px;
+                min-width: 32px;
+            }
+            
+            .mobile-photo {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .mobile-name {
+                font-size: 14px;
+            }
+            
+            .mobile-squad {
+                font-size: 11px;
+                padding: 3px 8px;
+            }
+            
+            .mobile-score {
+                font-size: 16px;
+                padding: 4px 8px;
+            }
+            
+            .mobile-menu {
+                padding: 15px;
             }
         }
     </style>
@@ -931,6 +1094,7 @@
                 </button>
             </div>
             
+            <!-- Обычная таблица для десктопа -->
             <table class="rating-table" id="ratingTable" style="display: none;">
                 <thead>
                     <tr>
@@ -945,6 +1109,11 @@
                     <!-- Заполняется JavaScript -->
                 </tbody>
             </table>
+            
+            <!-- Мобильные карточки -->
+            <div class="mobile-cards-container" id="mobileCardsContainer">
+                <!-- Заполняется JavaScript -->
+            </div>
         </div>
 
         <!-- Статистика -->
@@ -1001,7 +1170,7 @@
     // Конфигурация
     const CONFIG = {
         GOOGLE_SHEETS_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSoKvcFGb21qtR1ByKqVm1jFQkltgRF9SQgu03L2DN-aDj0l7B43kVLdfU23wjuzw/pub?gid=840845811&single=true&output=csv',
-        CLASS_NAME: "9А",
+        CLASS_NAME: "8В",
         PHOTO_FOLDER: 'students/',
         PHOTO_EXTENSION: '.jpg',
         MAX_SCORE: 100
@@ -1251,6 +1420,7 @@
             updateSquadFilter();
             renderTopThree();
             renderTable();
+            renderMobileCards();
             updateStats();
             showLoading(false);
             
@@ -1372,6 +1542,7 @@
         // Обновляем отображение
         renderTopThree();
         renderTable();
+        renderMobileCards();
         updateStats();
     }
 
@@ -1410,7 +1581,7 @@
         `).join('');
     }
 
-    // Отображение таблицы
+    // Отображение таблицы для десктопа
     function renderTable() {
         const tableBody = document.getElementById('tableBody');
         const totalStudents = document.getElementById('totalStudents');
@@ -1452,6 +1623,40 @@
                 </td>
                 <td class="score-cell">${student.score}</td>
             </tr>
+        `).join('');
+    }
+
+    // Отображение мобильных карточек
+    function renderMobileCards() {
+        const mobileCardsContainer = document.getElementById('mobileCardsContainer');
+        if (!mobileCardsContainer) return;
+        
+        if (filteredStudents.length === 0) {
+            mobileCardsContainer.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: #64748b; grid-column: 1 / -1;">
+                    <i class="fas fa-search" style="font-size: 40px; margin-bottom: 10px;"></i>
+                    <p>Не найдено учеников по вашему запросу</p>
+                </div>
+            `;
+            return;
+        }
+        
+        mobileCardsContainer.innerHTML = filteredStudents.map(student => `
+            <div class="mobile-student-card">
+                <div class="mobile-rank">${student.filteredRank || student.rank}</div>
+                <img src="${student.photo}" 
+                     alt="${student.name}" 
+                     class="mobile-photo"
+                     onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"50\" height=\"50\" viewBox=\"0 0 50 50\"><rect width=\"50\" height=\"50\" fill=\"%23667eea\"/><text x=\"50%\" y=\"50%\" dy=\".3em\" text-anchor=\"middle\" fill=\"white\" font-size=\"18\" font-family=\"Arial\">${student.name.split(' ')[0].charAt(0)}${student.name.split(' ')[1]?.charAt(0) || ''}</text></svg>'">
+                <div class="mobile-info">
+                    <div class="mobile-name">${student.name}</div>
+                    <div class="mobile-squad">${student.squad}</div>
+                </div>
+                <div class="mobile-score">
+                    ${student.score}
+                    <span class="mobile-score-label">баллов</span>
+                </div>
+            </div>
         `).join('');
     }
 
@@ -1533,17 +1738,27 @@
     function showLoading(isLoading) {
         const loading = document.getElementById('loadingTable');
         const table = document.getElementById('ratingTable');
+        const mobileCards = document.getElementById('mobileCardsContainer');
         const errorContainer = document.getElementById('errorContainer');
         
-        if (!loading || !table || !errorContainer) return;
+        if (!loading || !table || !mobileCards || !errorContainer) return;
         
         if (isLoading) {
             loading.style.display = 'block';
             table.style.display = 'none';
+            mobileCards.style.display = 'none';
             errorContainer.style.display = 'none';
         } else {
             loading.style.display = 'none';
-            table.style.display = 'table';
+            
+            // Показываем правильную версию в зависимости от ширины экрана
+            if (window.innerWidth <= 768) {
+                mobileCards.style.display = 'grid';
+                table.style.display = 'none';
+            } else {
+                mobileCards.style.display = 'none';
+                table.style.display = 'table';
+            }
         }
     }
 
@@ -1552,13 +1767,15 @@
         const errorContainer = document.getElementById('errorContainer');
         const errorMessage = document.getElementById('errorMessage');
         const table = document.getElementById('ratingTable');
+        const mobileCards = document.getElementById('mobileCardsContainer');
         const loading = document.getElementById('loadingTable');
         
-        if (!errorContainer || !errorMessage || !table || !loading) return;
+        if (!errorContainer || !errorMessage || !table || !mobileCards || !loading) return;
         
         errorMessage.textContent = message;
         errorContainer.style.display = 'block';
         table.style.display = 'none';
+        mobileCards.style.display = 'none';
         loading.style.display = 'none';
         
         // Очищаем данные
@@ -1568,6 +1785,7 @@
         updateSquadFilter();
         renderTopThree();
         renderTable();
+        renderMobileCards();
         updateStats();
     }
 
@@ -1576,6 +1794,22 @@
         const errorContainer = document.getElementById('errorContainer');
         if (errorContainer) errorContainer.style.display = 'none';
     }
+
+    // Адаптация при изменении размера окна
+    window.addEventListener('resize', function() {
+        const table = document.getElementById('ratingTable');
+        const mobileCards = document.getElementById('mobileCardsContainer');
+        
+        if (!table || !mobileCards) return;
+        
+        if (window.innerWidth <= 768) {
+            table.style.display = 'none';
+            mobileCards.style.display = 'grid';
+        } else {
+            table.style.display = 'table';
+            mobileCards.style.display = 'none';
+        }
+    });
 
     // Функция для отладки CSV
     async function debugCSV() {
@@ -1600,8 +1834,3 @@
 </script>
 </body>
 </html>
-
-
-
-
-
