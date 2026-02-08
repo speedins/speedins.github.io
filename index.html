@@ -28,6 +28,86 @@
             position: relative;
         }
 
+        /* Навигация */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            box-shadow: 0 2px 25px rgba(0, 0, 0, 0.1);
+            padding: 18px 0;
+            transition: all 0.3s ease;
+        }
+
+        .header.scrolled {
+            padding: 10px 0;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-container {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            color: #2563eb;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 24px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #1f2933;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-links a:hover {
+            color: #2563eb;
+            background: rgba(37, 99, 235, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-links a.active {
+            color: #2563eb;
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #2563eb;
+            cursor: pointer;
+        }
+
         /* Анимированный фон с движущейся картинкой */
         .animated-bg {
             position: fixed;
@@ -233,6 +313,12 @@
             color: #2563eb;
         }
 
+        h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #1f2933;
+        }
+
         p {
             font-size: 18px;
             line-height: 1.7;
@@ -403,47 +489,298 @@
             color: #1f2933;
         }
 
-        .achievements-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
-            margin-top: 40px;
+        /* СТИЛИ ДЛЯ ПУБЛИКАЦИЙ */
+        .publications-list {
+            margin-top: 30px;
         }
 
-        .achievement-item {
+        .publication-item {
             background: #f8fafc;
             border-radius: 15px;
-            padding: 25px;
-            text-align: center;
+            padding: 20px 25px;
+            margin-bottom: 20px;
             transition: all 0.3s ease;
-            border: 2px solid #e2e8f0;
+            border-left: 4px solid #2563eb;
             position: relative;
             overflow: hidden;
         }
 
-        .achievement-item::before {
-            content: '🏆';
-            font-size: 40px;
-            display: block;
-            margin-bottom: 15px;
+        .publication-item:hover {
+            transform: translateX(5px);
+            background: #eff6ff;
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.15);
         }
 
-        .achievement-item:hover {
-            transform: translateY(-5px);
-            border-color: #2563eb;
-            box-shadow: 0 15px 30px rgba(37, 99, 235, 0.15);
+        .publication-item::before {
+            content: '📄';
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 24px;
+            opacity: 0.2;
         }
 
-        .achievement-item h3 {
+        .publication-item h4 {
             font-size: 18px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             color: #1f2933;
         }
 
-        .achievement-item p {
+        .publication-link {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .publication-link:hover {
+            color: #1d4ed8;
+            gap: 12px;
+        }
+
+        .publication-link i {
             font-size: 14px;
+            transition: transform 0.3s ease;
+        }
+
+        .publication-link:hover i {
+            transform: translateX(3px);
+        }
+
+        /* СТИЛИ ДЛЯ ВЫБОРА МЕРОПРИЯТИЙ */
+        .events-select-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 30px 0 40px;
+        }
+
+        .events-select-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #1f2933;
+            font-size: 18px;
+        }
+
+        .events-select {
+            position: relative;
+            width: 100%;
+        }
+
+        .events-select-btn {
+            width: 100%;
+            padding: 18px 25px;
+            background: #f8fafc;
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2933;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .events-select-btn:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+        }
+
+        .events-select-btn.open {
+            border-color: #2563eb;
+            background: #eff6ff;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .events-select-btn i {
+            transition: transform 0.3s ease;
+        }
+
+        .events-select-btn.open i {
+            transform: rotate(180deg);
+        }
+
+        .events-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: white;
+            border: 2px solid #2563eb;
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 20px 40px rgba(37, 99, 235, 0.15);
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            z-index: 100;
+            transition: all 0.4s ease;
+        }
+
+        .events-dropdown.open {
+            max-height: 400px;
+            opacity: 1;
+            overflow-y: auto;
+        }
+
+        .event-option {
+            padding: 18px 25px;
+            font-size: 16px;
+            color: #1f2933;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .event-option:last-child {
+            border-bottom: none;
+        }
+
+        .event-option:hover {
+            background: #eff6ff;
+            color: #2563eb;
+            transform: translateX(5px);
+        }
+
+        .event-option.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        /* СТИЛИ ДЛЯ ГАЛЕРЕИ МЕРОПРИЯТИЙ */
+        .event-gallery {
+            margin-top: 40px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.5s ease;
+        }
+
+        .event-gallery.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .event-info {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f8fafc;
+            border-radius: 15px;
+            border-left: 4px solid #2563eb;
+        }
+
+        .event-info h3 {
+            color: #2563eb;
+            margin-bottom: 10px;
+            font-size: 22px;
+        }
+
+        .event-date {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .event-description {
+            color: #475569;
+            line-height: 1.6;
+        }
+
+        .photos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .photo-item {
+            border-radius: 12px;
+            overflow: hidden;
+            height: 250px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .photo-item:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .photo-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .photo-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            color: white;
+            padding: 15px;
+            font-size: 14px;
+            text-align: center;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .photo-item:hover .photo-caption {
+            transform: translateY(0);
+        }
+
+        .no-photos {
+            text-align: center;
+            padding: 60px 40px;
             color: #64748b;
-            margin: 0 auto;
+            font-size: 18px;
+            grid-column: 1 / -1;
+            background: #f8fafc;
+            border-radius: 15px;
+            border: 2px dashed #cbd5e1;
+        }
+
+        .no-photos i {
+            font-size: 60px;
+            margin-bottom: 20px;
+            display: block;
+            color: #cbd5e1;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
         }
 
         /* ИСПРАВЛЕННЫЕ СТИЛИ ДЛЯ СЕРТИФИКАТОВ */
@@ -589,6 +926,69 @@
             backdrop-filter: blur(10px);
         }
 
+        /* Кнопка перехода к рейтингу */
+        .rating-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            color: white;
+            text-decoration: none;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+        }
+
+        .rating-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(37, 99, 235, 0.4);
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
+        }
+
+        /* Мобильное меню */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+            padding: 20px;
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu.active {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .mobile-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 20px;
+            color: #1f2933;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu a:hover,
+        .mobile-menu a.active {
+            background: rgba(37, 99, 235, 0.1);
+            color: #2563eb;
+        }
+
         @media (max-width: 1100px) {
             .hero-container {
                 grid-template-columns: 1fr;
@@ -612,7 +1012,11 @@
             }
             
             .hero {
-                padding-top: 100px;
+                padding-top: 150px;
+            }
+            
+            .photos-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             }
         }
 
@@ -634,6 +1038,10 @@
                 font-size: 28px;
             }
             
+            h3 {
+                font-size: 22px;
+            }
+            
             .card {
                 padding: 30px;
             }
@@ -646,12 +1054,28 @@
                 padding-left: 45px;
             }
             
-            .achievements-grid {
+            .certificates-grid {
                 grid-template-columns: 1fr;
             }
             
-            .certificates-grid {
+            .photos-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .photo-item {
+                height: 220px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .nav-container {
+                padding: 0 20px;
             }
         }
 
@@ -676,11 +1100,20 @@
             }
             
             .hero {
-                padding-top: 80px;
+                padding-top: 130px;
             }
             
             .modal-content {
                 width: 95%;
+            }
+            
+            .events-select-btn {
+                padding: 15px 20px;
+                font-size: 16px;
+            }
+            
+            .event-option {
+                padding: 15px 20px;
             }
         }
     </style>
@@ -692,6 +1125,46 @@
     <span class="modal-close">&times;</span>
     <img class="modal-content" id="modalImage">
     <div class="modal-caption" id="modalCaption"></div>
+</div>
+
+<!-- Навигация -->
+<header class="header" id="header">
+    <div class="nav-container">
+        <a href="index.html" class="logo">
+            <i class="fas fa-chalkboard-teacher"></i>
+            Ладысь А.А.
+        </a>
+        
+        <nav class="nav-links">
+            <a href="#hero" class="active"><i class="fas fa-home"></i> Главная</a>
+            <a href="#about"><i class="fas fa-user"></i> Обо мне</a>
+            <a href="#experience"><i class="fas fa-briefcase"></i> Опыт</a>
+            <a href="#education"><i class="fas fa-graduation-cap"></i> Образование</a>
+            <a href="#achievements"><i class="fas fa-award"></i> Достижения</a>
+            <a href="#events-gallery"><i class="fas fa-images"></i> Мероприятия</a>
+            <a href="rating.html" style="background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; padding: 10px 20px;">
+                <i class="fas fa-trophy"></i> Рейтинг
+            </a>
+        </nav>
+        
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+</header>
+
+<!-- Мобильное меню -->
+<div class="mobile-menu" id="mobileMenu">
+    <a href="#hero"><i class="fas fa-home"></i> Главная</a>
+    <a href="#about"><i class="fas fa-user"></i> Обо мне</a>
+    <a href="#experience"><i class="fas fa-briefcase"></i> Опыт</a>
+    <a href="#education"><i class="fas fa-graduation-cap"></i> Образование</a>
+    <a href="#achievements"><i class="fas fa-award"></i> Достижения</a>
+    <a href="#events-gallery"><i class="fas fa-images"></i> Мероприятия</a>
+    <a href="#contacts"><i class="fas fa-envelope"></i> Контакты</a>
+    <a href="rating.html" style="background: linear-gradient(135deg, #2563eb, #3b82f6); color: white;">
+        <i class="fas fa-trophy"></i> Рейтинг учеников
+    </a>
 </div>
 
 <!-- Анимированный фон с картинкой -->
@@ -713,6 +1186,9 @@
                 В своей работе уделяю внимание развитию логического мышления,
                 самостоятельности и системного понимания учебного материала.
             </p>
+            
+            <!-- Кнопка перехода к рейтингу -->
+
         </div>
         
         <!-- Прямоугольное фото справа -->
@@ -824,6 +1300,42 @@
     </div>
 </section>
 
+<!-- БЛОК: ПУБЛИКАЦИИ -->
+<section id="publications">
+    <div class="container reveal">
+        <div class="card">
+            <h2>Публикации</h2>
+            <p>Мои научные и методические публикации, статьи и выступления на конференциях:</p>
+            
+            <div class="publications-list">
+                <div class="publication-item">
+                    <h4>Методика преподавания математики в современной школе</h4>
+                    <p>Статья о современных подходах к преподаванию математики, опубликованная в сборнике научных трудов.</p>
+                    <a href="https://example.com/publication1" target="_blank" class="publication-link">
+                        Читать статью <i class="fas fa-external-link-alt"></i>
+                    </a>
+                </div>
+                
+                <div class="publication-item">
+                    <h4>Использование цифровых технологий на уроках информатики</h4>
+                    <p>Опыт внедрения цифровых инструментов в образовательный процесс для повышения эффективности обучения.</p>
+                    <a href="https://example.com/publication2" target="_blank" class="publication-link">
+                        Открыть публикацию <i class="fas fa-external-link-alt"></i>
+                    </a>
+                </div>
+                
+                <div class="publication-item">
+                    <h4>Развитие логического мышления у учащихся средних классов</h4>
+                    <p>Методические рекомендации по развитию логического мышления на уроках математики и информатики.</p>
+                    <a href="https://example.com/publication3" target="_blank" class="publication-link">
+                        Скачать PDF <i class="fas fa-download"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <section id="achievements">
     <div class="container reveal">
         <div class="card">
@@ -865,13 +1377,50 @@
     </div>
 </section>
 
+<!-- БЛОК: ФОТОГАЛЕРЕЯ МЕРОПРИЯТИЙ -->
+<section id="events-gallery">
+    <div class="container reveal">
+        <div class="card">
+            <h2>Фотогалерея мероприятий</h2>
+            <p>Выберите мероприятие из списка, чтобы увидеть фотографии:</p>
+            
+            <!-- Выпадающий список мероприятий -->
+            <div class="events-select-container">
+                <label class="events-select-label">Выберите мероприятие:</label>
+                <div class="events-select">
+                    <button class="events-select-btn" id="eventsSelectBtn">
+                        <span id="selectedEventText">Выберите мероприятие...</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="events-dropdown" id="eventsDropdown">
+                        <!-- Список мероприятий заполняется JavaScript -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Блок с галереей выбранного мероприятия -->
+            <div id="eventGalleryContainer">
+                <!-- Здесь будет отображаться галерея выбранного мероприятия -->
+                <div class="no-photos" id="noEventSelected">
+                    <i class="fas fa-images"></i>
+                    <p>Выберите мероприятие из списка выше, чтобы увидеть фотографии</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <section id="contacts">
     <div class="container reveal">
         <div class="card">
             <h2>Контакты</h2>
             <p style="margin-top: 20px;"><i class="fas fa-envelope"></i> alenavorona2018@inbox.ru</p>
             <p style="margin-top: 10px;"><i class="fas fa-map-marker-alt"></i> г.Лесосибирск, 40 лет Октября д 12, МБОУ «ООШ №5»</p>
-                        </div>
+            
+            <!-- Кнопка перехода к рейтингу в конце страницы -->
+            <a href="rating.html" class="rating-btn" style="margin-top: 30px;">
+                <i class="fas fa-chart-line"></i> Перейти к рейтингу учеников
+            </a>
         </div>
     </div>
 </section>
@@ -881,84 +1430,448 @@
 </footer>
 
 <script>
-    // Модальное окно для сертификатов
-    const modal = document.getElementById('certificateModal');
-    const modalImg = document.getElementById('modalImage');
-    const modalCaption = document.getElementById('modalCaption');
-    const closeModal = document.querySelector('.modal-close');
+    // Данные мероприятий - теперь добавляются прямо в HTML через div с классом "event-data"
+    let eventsData = [];
 
-    // Открытие модального окна при клике на сертификат
-    document.querySelectorAll('.certificate-item').forEach(item => {
-        item.addEventListener('click', function() {
-            const img = this.querySelector('img');
-            if (img) {
-                modal.style.display = 'block';
-                modalImg.src = img.src;
-                modalImg.style.animation = 'zoomIn 0.3s ease';
+    // Инициализация при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function() {
+        // Сначала собираем данные из HTML
+        collectEventDataFromHTML();
+        
+        // Если нет данных в HTML, используем примеры
+        if (eventsData.length === 0) {
+            eventsData = getDefaultEvents();
+        }
+        
+        initEventsGallery();
+        initModal();
+        initScrollAnimations();
+        initParallax();
+        initNavigation();
+        initMobileMenu();
+        initActiveNavLink();
+    });
+
+    // Собираем данные мероприятий из HTML-элементов
+    function collectEventDataFromHTML() {
+        const eventElements = document.querySelectorAll('.event-data');
+        eventsData = [];
+        
+        eventElements.forEach(element => {
+            const event = {
+                id: parseInt(element.dataset.id),
+                name: element.dataset.name,
+                date: element.dataset.date,
+                description: element.dataset.description,
+                photos: []
+            };
+            
+            // Собираем фотографии
+            const photoElements = element.querySelectorAll('.event-photo');
+            photoElements.forEach(photo => {
+                event.photos.push({
+                    src: photo.dataset.src,
+                    caption: photo.dataset.caption
+                });
+            });
+            
+            eventsData.push(event);
+        });
+    }
+
+    // Функция для получения дефолтных мероприятий (если в HTML нет данных)
+    function getDefaultEvents() {
+        return [
+            {
+                id: 1,
+                name: "Конференция 'Учитель года 2024'",
+                date: "15 марта 2024",
+                description: "Участие в городском конкурсе профессионального мастерства 'Учитель года'. Выступление с докладом о современных методиках преподавания математики.",
+                photos: [
+                    { src: "event1.jpg", caption: "Выступление с докладом на конференции" },
+                    { src: "event2.jpg", caption: "Награждение участников конкурса" },
+                    { src: "event3.jpg", caption: "Работа в методической секции" }
+                ]
+            },
+            {
+                id: 2,
+                name: "Проект 'Билет в будущее'",
+                date: "Сентябрь 2023 - Май 2024",
+                description: "Работа педагогом-навигатором во всероссийском проекте по профориентации школьников. Проведение диагностики и профессиональных проб.",
+                photos: [
+                    { src: "project1.jpg", caption: "Профориентационная диагностика с учащимися" },
+                    { src: "project2.jpg", caption: "Проведение профессиональных проб" },
+                    { src: "project3.jpg", caption: "Встреча с представителями профессий" }
+                ]
+            }
+        ];
+    }
+
+    // Инициализация навигации
+    function initNavigation() {
+        const header = document.getElementById('header');
+        
+        // Изменение шапки при скролле
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
             } else {
-                const certNumber = this.getAttribute('data-cert');
-                alert(`Для сертификата ${certNumber} добавьте изображение:\n\n<img src="certificate${certNumber}.jpg" alt="Сертификат ${certNumber}">`);
+                header.classList.remove('scrolled');
             }
         });
-    });
+        
+        // Плавная прокрутка для ссылок в навигации
+        document.querySelectorAll('.nav-links a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    // Закрываем мобильное меню если открыто
+                    const mobileMenu = document.getElementById('mobileMenu');
+                    mobileMenu.classList.remove('active');
+                    
+                    // Плавная прокрутка
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Обновляем активную ссылку
+                    updateActiveNavLink(targetId);
+                }
+            });
+        });
+    }
 
-    // Закрытие модального окна
-    closeModal.addEventListener('click', function() {
-        modal.style.display = 'none';
-    });
+    // Инициализация мобильного меню
+    function initMobileMenu() {
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+            mobileMenuBtn.innerHTML = mobileMenu.classList.contains('active') 
+                ? '<i class="fas fa-times"></i>' 
+                : '<i class="fas fa-bars"></i>';
+        });
+        
+        // Закрытие меню при клике на ссылку
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                
+                // Для ссылок на якоря
+                if (link.getAttribute('href').startsWith('#')) {
+                    const targetId = link.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            });
+        });
+        
+        // Закрытие меню при клике вне его
+        document.addEventListener('click', (e) => {
+            if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                mobileMenu.classList.remove('active');
+                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            }
+        });
+    }
 
-    // Закрытие модального окна при клике вне изображения
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            modal.style.display = 'none';
+    // Обновление активной ссылки в навигации
+    function updateActiveNavLink(targetId) {
+        document.querySelectorAll('.nav-links a, .mobile-menu a').forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === targetId) {
+                link.classList.add('active');
+            }
+        });
+    }
+
+    // Автоматическое обновление активной ссылки при скролле
+    function initActiveNavLink() {
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-links a[href^="#"], .mobile-menu a[href^="#"]');
+        
+        window.addEventListener('scroll', () => {
+            let current = '';
+            const scrollPos = window.scrollY + 100;
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                
+                if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    }
+
+    // Инициализация галереи мероприятий
+    function initEventsGallery() {
+        const eventsSelectBtn = document.getElementById('eventsSelectBtn');
+        const eventsDropdown = document.getElementById('eventsDropdown');
+        const eventGalleryContainer = document.getElementById('eventGalleryContainer');
+        
+        let selectedEventId = null;
+        
+        // Заполняем выпадающий список мероприятиями
+        function populateEventsDropdown() {
+            eventsDropdown.innerHTML = '';
+            
+            if (eventsData.length === 0) {
+                const option = document.createElement('div');
+                option.className = 'event-option';
+                option.textContent = 'Нет мероприятий';
+                eventsDropdown.appendChild(option);
+                return;
+            }
+            
+            eventsData.forEach(event => {
+                const option = document.createElement('div');
+                option.className = 'event-option';
+                option.dataset.id = event.id;
+                option.textContent = event.name;
+                
+                option.addEventListener('click', function() {
+                    selectEvent(event.id);
+                    closeDropdown();
+                });
+                
+                eventsDropdown.appendChild(option);
+            });
         }
-    });
-
-    // Закрытие модального окна клавишей ESC
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && modal.style.display === 'block') {
-            modal.style.display = 'none';
+        
+        // Выбор мероприятия
+        function selectEvent(eventId) {
+            selectedEventId = eventId;
+            const event = eventsData.find(e => e.id === eventId);
+            
+            if (event) {
+                // Обновляем текст на кнопке
+                document.getElementById('selectedEventText').textContent = event.name;
+                
+                // Отображаем галерею мероприятия
+                displayEventGallery(event);
+                
+                // Помечаем выбранный пункт в dropdown
+                document.querySelectorAll('.event-option').forEach(option => {
+                    option.classList.remove('active');
+                    if (parseInt(option.dataset.id) === eventId) {
+                        option.classList.add('active');
+                    }
+                });
+            }
         }
-    });
+        
+        // Отображение галереи мероприятия
+        function displayEventGallery(event) {
+            eventGalleryContainer.innerHTML = '';
+            
+            const gallery = document.createElement('div');
+            gallery.className = 'event-gallery active';
+            
+            // Информация о мероприятии
+            const infoHtml = `
+                <div class="event-info">
+                    <div class="event-date">
+                        <i class="far fa-calendar"></i> ${event.date}
+                    </div>
+                    <h3>${event.name}</h3>
+                    <p class="event-description">${event.description}</p>
+                </div>
+            `;
+            
+            // Фотографии
+            let photosHtml = '';
+            if (event.photos && event.photos.length > 0) {
+                photosHtml = '<div class="photos-grid">';
+                event.photos.forEach(photo => {
+                    photosHtml += `
+                        <div class="photo-item" data-src="${photo.src}" data-caption="${photo.caption}">
+                            <img src="${photo.src}" alt="${photo.caption}" onerror="this.src='https://via.placeholder.com/400x300?text=Фото+не+загружено'">
+                            <div class="photo-caption">${photo.caption}</div>
+                        </div>
+                    `;
+                });
+                photosHtml += '</div>';
+            } else {
+                photosHtml = `
+                    <div class="no-photos">
+                        <i class="fas fa-camera"></i>
+                        <p>Для этого мероприятия ещё нет фотографий</p>
+                    </div>
+                `;
+            }
+            
+            gallery.innerHTML = infoHtml + photosHtml;
+            eventGalleryContainer.appendChild(gallery);
+            
+            // Добавляем обработчики кликов на фотографии
+            gallery.querySelectorAll('.photo-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const imgSrc = this.dataset.src;
+                    const caption = this.dataset.caption;
+                    
+                    if (imgSrc) {
+                        openModal(imgSrc, caption);
+                    }
+                });
+            });
+        }
+        
+        // Открытие/закрытие dropdown
+        function toggleDropdown() {
+            eventsDropdown.classList.toggle('open');
+            eventsSelectBtn.classList.toggle('open');
+            
+            if (eventsDropdown.classList.contains('open')) {
+                // Закрытие при клике вне dropdown
+                document.addEventListener('click', closeDropdownOnClickOutside);
+            } else {
+                document.removeEventListener('click', closeDropdownOnClickOutside);
+            }
+        }
+        
+        function closeDropdown() {
+            eventsDropdown.classList.remove('open');
+            eventsSelectBtn.classList.remove('open');
+            document.removeEventListener('click', closeDropdownOnClickOutside);
+        }
+        
+        function closeDropdownOnClickOutside(e) {
+            if (!eventsSelectBtn.contains(e.target) && !eventsDropdown.contains(e.target)) {
+                closeDropdown();
+            }
+        }
+        
+        // Инициализация
+        populateEventsDropdown();
+        
+        // Выбираем первое мероприятие по умолчанию, если есть
+        if (eventsData.length > 0) {
+            selectEvent(eventsData[0].id);
+        }
+        
+        // Навешиваем обработчики событий
+        eventsSelectBtn.addEventListener('click', toggleDropdown);
+        
+        // Закрытие dropdown при нажатии ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && eventsDropdown.classList.contains('open')) {
+                closeDropdown();
+            }
+        });
+    }
+
+    // Инициализация модального окна
+    function initModal() {
+        const modal = document.getElementById('certificateModal');
+        const modalImg = document.getElementById('modalImage');
+        const modalCaption = document.getElementById('modalCaption');
+        const closeModal = document.querySelector('.modal-close');
+
+        // Открытие модального окна при клике на сертификат
+        document.querySelectorAll('.certificate-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const img = this.querySelector('img');
+                if (img) {
+                    openModal(img.src, img.alt);
+                }
+            });
+        });
+
+        // Закрытие модального окна
+        closeModal.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+
+        // Закрытие модального окна при клике вне изображения
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Закрытие модального окна клавишей ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modal.style.display === 'block') {
+                modal.style.display = 'none';
+            }
+        });
+    }
+
+    // Функция открытия модального окна
+    function openModal(src, caption) {
+        const modal = document.getElementById('certificateModal');
+        const modalImg = document.getElementById('modalImage');
+        const modalCaption = document.getElementById('modalCaption');
+        
+        modal.style.display = 'block';
+        modalImg.src = src;
+        modalImg.style.animation = 'zoomIn 0.3s ease';
+        modalCaption.textContent = caption || '';
+    }
 
     // Параллакс эффект для фона
-    window.addEventListener('scroll', () => {
-        const scrolled = window.scrollY;
-        const bg = document.querySelector('.animated-bg');
-        const heroBg = document.querySelector('.hero-bg');
-        
-        if (bg) {
-            bg.style.transform = `translateY(${scrolled * 0.15}px) scale(${1 + scrolled * 0.0002})`;
-        }
-        
-        if (heroBg) {
-            heroBg.style.transform = `translateY(${scrolled * 0.4}px)`;
-            heroBg.style.opacity = Math.max(0.3, 1 - scrolled * 0.003);
-        }
-        
-        // Параллакс для фото
-        const photoFrame = document.querySelector('.photo-frame');
-        if (photoFrame && scrolled < 400) {
-            photoFrame.style.transform = `perspective(1000px) rotateY(${-5 + scrolled * 0.02}deg) rotateX(${2 - scrolled * 0.01}deg)`;
-        }
-    });
-
-    // Reveal анимация для элементов
-    const reveals = document.querySelectorAll('.reveal');
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry, index) => {
-            if (entry.isIntersecting) {
-                setTimeout(() => {
-                    entry.target.classList.add('show');
-                }, index * 100);
+    function initParallax() {
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            const bg = document.querySelector('.animated-bg');
+            const heroBg = document.querySelector('.hero-bg');
+            
+            if (bg) {
+                bg.style.transform = `translateY(${scrolled * 0.15}px) scale(${1 + scrolled * 0.0002})`;
+            }
+            
+            if (heroBg) {
+                heroBg.style.transform = `translateY(${scrolled * 0.4}px)`;
+                heroBg.style.opacity = Math.max(0.3, 1 - scrolled * 0.003);
+            }
+            
+            // Параллакс для фото
+            const photoFrame = document.querySelector('.photo-frame');
+            if (photoFrame && scrolled < 400) {
+                photoFrame.style.transform = `perspective(1000px) rotateY(${-5 + scrolled * 0.02}deg) rotateX(${2 - scrolled * 0.01}deg)`;
             }
         });
-    }, {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    });
+    }
 
-    reveals.forEach(el => observer.observe(el));
+    // Reveal анимация для элементов
+    function initScrollAnimations() {
+        const reveals = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('show');
+                    }, index * 100);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        reveals.forEach(el => observer.observe(el));
+    }
 
     // Функция для прокрутки к следующему разделу
     function scrollToNextSection(currentSection) {
@@ -973,9 +1886,9 @@
         }
         
         if (nextSection) {
-            nextSection.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
+            window.scrollTo({
+                top: nextSection.offsetTop - 80,
+                behavior: 'smooth'
             });
         }
     }
@@ -996,46 +1909,42 @@
             }
         });
         
-        // Плавная прокрутка для ссылок
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
-                
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    targetElement.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
+        // Анимация при загрузке
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s ease';
+            
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
         });
-        
-        // Добавляем CSS для картинки фона
-        const style = document.createElement('style');
-        style.textContent = `
-            .animated-bg::before {
-                background-image: url('bg1.jpg');
-            }
-        `;
-        document.head.appendChild(style);
-    });
-
-    // Анимация при загрузке
-    window.addEventListener('load', () => {
-        document.body.style.opacity = '0';
-        document.body.style.transition = 'opacity 0.5s ease';
-        
-        setTimeout(() => {
-            document.body.style.opacity = '1';
-        }, 100);
     });
 </script>
 
+<!-- СКРЫТЫЕ ДАННЫЕ МЕРОПРИЯТИЙ -->
+<div style="display: none;">
+    <!-- Пример мероприятия 1 -->
+    <div class="event-data" 
+         data-id="1" 
+         data-name="Конференция 'Учитель года 2024'" 
+         data-date="15 марта 2024" 
+         data-description="Участие в городском конкурсе профессионального мастерства 'Учитель года'. Выступление с докладом о современных методиках преподавания математики.">
+        <div class="event-photo" data-src="event1.jpg" data-caption="Выступление с докладом на конференции"></div>
+        <div class="event-photo" data-src="event2.jpg" data-caption="Награждение участников конкурса"></div>
+        <div class="event-photo" data-src="event3.jpg" data-caption="Работа в методической секции"></div>
+    </div>
+    
+    <!-- Пример мероприятия 2 -->
+    <div class="event-data" 
+         data-id="2" 
+         data-name="Проект 'Билет в будущее'" 
+         data-date="Сентябрь 2023 - Май 2024" 
+         data-description="Работа педагогом-навигатором во всероссийском проекте по профориентации школьников. Проведение диагностики и профессиональных проб.">
+        <div class="event-photo" data-src="project1.jpg" data-caption="Профориентационная диагностика с учащимися"></div>
+        <div class="event-photo" data-src="project2.jpg" data-caption="Проведение профессиональных проб"></div>
+        <div class="event-photo" data-src="project3.jpg" data-caption="Встреча с представителями профессий"></div>
+    </div>
+</div>
+
 </body>
 </html>
-
-
-
