@@ -1763,7 +1763,7 @@
                 event.photos.forEach(photo => {
                     photosHtml += `
                         <div class="photo-item" data-src="${photo.src}" data-caption="${photo.caption}">
-                            <img src="${photo.src}" alt="${photo.caption}" onerror="this.src='https://via.placeholder.com/400x300?text=Фото+не+загружено'">
+                            <img src="${photo.src}" alt="${photo.caption}">
                             <div class="photo-caption">${photo.caption}</div>
                         </div>
                     `;
@@ -2052,4 +2052,5 @@
 
 </body>
 </html>
+
 
