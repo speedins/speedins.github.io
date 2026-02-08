@@ -951,7 +951,7 @@
 
         /* Мобильное меню */
         .mobile-menu {
-            display: none;
+            display: block;
             position: fixed;
             top: 70px;
             left: 0;
@@ -963,11 +963,13 @@
             transform: translateY(-100%);
             opacity: 0;
             transition: all 0.3s ease;
+            pointer-events: none;
         }
 
         .mobile-menu.active {
             transform: translateY(0);
             opacity: 1;
+            pointer-events: auto;
         }
 
         .mobile-menu a {
@@ -2052,5 +2054,6 @@
 
 </body>
 </html>
+
 
 
