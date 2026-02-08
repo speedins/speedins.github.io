@@ -739,31 +739,46 @@
             }
         }
 
-        @media (max-width: 768px) {
-            .hero-content h1 {
-                font-size: 42px;
-            }
-            .rating-table-container {
-                padding: 20px;
-            }
-            .rating-table {
-                display: block;
-                overflow-x: auto;
-            }
-            .rating-table th,
-            .rating-table td {
-                padding: 15px 10px;
-            }
-            .stats-container {
-                grid-template-columns: 1fr;
-            }
-            .hero-container {
-                padding: 0 20px;
-            }
-            .rating-container {
-                padding: 0 20px 80px;
-            }
-        }
+        @media (max-width: 600px) {
+
+    .rating-table,
+    .rating-table thead {
+        display: none;
+    }
+
+    .rating-table tbody {
+        display: block;
+    }
+
+    .rating-table tr {
+        display: block;
+        background: #1e1e1e;
+        margin-bottom: 12px;
+        padding: 14px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .rating-table td {
+        display: flex;
+        justify-content: space-between;
+        padding: 6px 0;
+        border: none;
+        font-size: 14px;
+    }
+
+    .rating-table td::before {
+        content: attr(data-label);
+        color: #aaa;
+    }
+
+    /* Баллы — акцент */
+    .rating-table td:last-child {
+        font-weight: bold;
+        color: #4caf50;
+        font-size: 16px;
+    }
+}
 
         @media (max-width: 480px) {
             .hero-content h1 {
@@ -1577,6 +1592,7 @@
 </script>
 </body>
 </html>
+
 
 
 
