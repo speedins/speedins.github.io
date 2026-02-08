@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Рейтинг учеников - Ладысь Алёна Александровна</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f6f8fc;
+            color: #1f2933;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+               /* Навигация */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            box-shadow: 0 2px 25px rgba(0, 0, 0, 0.1);
+            padding: 18px 0;
+            transition: all 0.3s ease;
+        }
+
+        .header.scrolled {
+            padding: 10px 0;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-container {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            color: #2563eb;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 24px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #1f2933;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-links a:hover {
+            color: #2563eb;
+            background: rgba(37, 99, 235, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-links a.active {
+            color: #2563eb;
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #2563eb;
+            cursor: pointer;
+        }
+
+        /* Анимированный фон */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: linear-gradient(-45deg, #e6f0ff, #f0f5ff, #e6eeff, #f5f9ff);
+            background-size: 400% 400%;
+            animation: gradientAnimation 25s ease infinite;
+            overflow: hidden;
+        }
+
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 400%;
+            height: 400%;
+            background-image: url('https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=2070');
+            background-size: 600px;
+            background-repeat: repeat;
+            opacity: 0.07;
+            animation: movePattern 400s linear infinite;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes movePattern {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-300px, -300px) rotate(360deg); }
+        }
+
+        /* HERO секция */
+        .rating-hero {
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding-top: 120px;
+            margin-bottom: 50px;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(37, 99, 235, 0.2), rgba(37, 99, 235, 0.1)), 
+                        url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2070') center/cover no-repeat;
+            z-index: -1;
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+            text-align: center;
+        }
+
+        .hero-content h1 {
+            font-size: 56px;
+            margin-bottom: 20px;
+            color: #1f2933;
+            line-height: 1.2;
+        }
+
+        .hero-content p {
+            font-size: 20px;
+            color: #475569;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+
+        .last-updated {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px 25px;
+            border-radius: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #2563eb;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .last-updated i {
+            animation: spin 4s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Контейнер рейтинга */
+        .rating-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 80px;
+        }
+
+        /* Фильтры */
+        .rating-filters {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: #1f2933;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 12px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .filter-btn {
+            padding: 12px 30px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            align-self: flex-end;
+        }
+
+        .filter-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        /* Топ 3 ученика */
+        .top-three {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .top-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .top-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .top-card.first {
+            transform: scale(1.05);
+        }
+
+        .top-card.first:hover {
+            transform: scale(1.05) translateY(-10px);
+        }
+
+        .rank-badge {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 24px;
+            box-shadow: 0 10px 20px rgba(245, 158, 11, 0.3);
+            border: 4px solid white;
+        }
+
+        .top-card.second .rank-badge {
+            background: linear-gradient(135deg, #94a3b8, #64748b);
+        }
+
+        .top-card.third .rank-badge {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+        }
+
+        .student-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #e2e8f0;
+            margin: 20px auto;
+            transition: all 0.3s ease;
+        }
+
+        .top-card:hover .student-photo {
+            border-color: #2563eb;
+            transform: scale(1.1);
+        }
+
+        .top-card h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #1f2933;
+        }
+
+        .score {
+            font-size: 36px;
+            font-weight: 700;
+            color: #2563eb;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2563eb, #3b82f6);
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+
+        /* Таблица рейтинга */
+        .rating-table-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .rating-table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .rating-table-header h2 {
+            font-size: 28px;
+            color: #1f2933;
+        }
+
+        .total-students {
+            background: #f1f5f9;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .rating-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .rating-table thead {
+            background: #f8fafc;
+        }
+
+        .rating-table th {
+            padding: 20px;
+            text-align: left;
+            font-weight: 600;
+            color: #475569;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .rating-table td {
+            padding: 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .rating-table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .rating-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .rank-cell {
+            font-weight: 700;
+            font-size: 18px;
+            text-align: center;
+            color: #2563eb;
+        }
+
+        .photo-cell {
+            width: 60px;
+        }
+
+        .student-photo-small {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #e2e8f0;
+        }
+
+        .name-cell h4 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .score-cell {
+            font-weight: 700;
+            font-size: 20px;
+            color: #1f2933;
+        }
+
+        .trend-cell {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .trend-up { color: #10b981; }
+        .trend-down { color: #ef4444; }
+        .trend-stable { color: #94a3b8; }
+
+        /* Статистика */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #dbeafe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 24px;
+            color: #2563eb;
+        }
+
+        .stat-value {
+            font-size: 42px;
+            font-weight: 700;
+            color: #1f2933;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        /* Кнопка обновления */
+        .update-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .update-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(37, 99, 235, 0.4);
+        }
+
+        /* Загрузка */
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: #64748b;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #e2e8f0;
+            border-top-color: #2563eb;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            animation: spinner 1s linear infinite;
+        }
+
+        @keyframes spinner {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Ошибка */
+        .error-container {
+            text-align: center;
+            padding: 60px;
+            background: #fef2f2;
+            border-radius: 20px;
+            margin: 20px 0;
+            border: 2px solid #fecaca;
+        }
+
+        .error-container i {
+            font-size: 60px;
+            color: #dc2626;
+            margin-bottom: 20px;
+        }
+
+        .error-container h3 {
+            color: #dc2626;
+            margin-bottom: 10px;
+        }
+
+        /* Фото по умолчанию */
+        .default-photo {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            font-size: 14px;
+            color: #6b7280;
+            background: rgba(255, 255, 255, 0.9);
+            border-top: 1px solid #e5e7eb;
+            backdrop-filter: blur(10px);
+        }
+
+        .home-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .home-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
+            background: linear-gradient(135deg, #0da271, #10b981);
+        }
+
+        /* Мобильное меню */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+            padding: 20px;
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu.active {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .mobile-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 20px;
+            color: #1f2933;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu a:hover,
+        .mobile-menu a.active {
+            background: rgba(37, 99, 235, 0.1);
+            color: #2563eb;
+        }
+
+        /* Анимация reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(60px) scale(0.96);
+            filter: blur(8px);
+            transition: all 1s cubic-bezier(.2,.65,.3,1);
+        }
+
+        .reveal.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+        }
+
+        /* Адаптивность */
+        @media (max-width: 1100px) {
+            .top-three {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            .top-card.first {
+                transform: scale(1);
+            }
+            .top-card.first:hover {
+                transform: translateY(-10px);
+            }
+            .rating-filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filter-group {
+                width: 100%;
+            }
+            .nav-links {
+                display: none;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .nav-links {
+                display: none;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .nav-container {
+                padding: 0 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 42px;
+            }
+            .rating-table-container {
+                padding: 20px;
+            }
+            .rating-table {
+                display: block;
+                overflow-x: auto;
+            }
+            .rating-table th,
+            .rating-table td {
+                padding: 15px 10px;
+            }
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            .hero-container {
+                padding: 0 20px;
+            }
+            .rating-container {
+                padding: 0 20px 80px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-content h1 {
+                font-size: 36px;
+            }
+            .hero-content p {
+                font-size: 18px;
+            }
+            .top-card {
+                padding: 20px;
+            }
+            .score {
+                font-size: 28px;
+            }
+            .filter-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Навигация -->
+    <header class="header" id="header">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-chalkboard-teacher"></i>
+                Ладысь А.А.
+            </a>
+            
+            <nav class="nav-links">
+                <a href="index.html"><i class="fas fa-home"></i> Главная</a>
+                <a href="index.html#about"><i class="fas fa-user"></i> Обо мне</a>
+                <a href="index.html#experience"><i class="fas fa-briefcase"></i> Опыт</a>
+                <a href="index.html#education"><i class="fas fa-graduation-cap"></i> Образование</a>
+                <a href="index.html#achievements"><i class="fas fa-award"></i> Достижения</a>
+                <a href="index.html#events-gallery"><i class="fas fa-images"></i> Мероприятия</a>
+                <a href="rating.html" class="active" style="background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; padding: 10px 20px;">
+                    <i class="fas fa-trophy"></i> Рейтинг
+                </a>
+            </nav>
+            
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Мобильное меню -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html"><i class="fas fa-home"></i> Главная</a>
+        <a href="index.html#about"><i class="fas fa-user"></i> Обо мне</a>
+        <a href="index.html#experience"><i class="fas fa-briefcase"></i> Опыт</a>
+        <a href="index.html#education"><i class="fas fa-graduation-cap"></i> Образование</a>
+        <a href="index.html#achievements"><i class="fas fa-award"></i> Достижения</a>
+        <a href="index.html#events-gallery"><i class="fas fa-images"></i> Мероприятия</a>
+        <a href="rating.html" class="active"><i class="fas fa-trophy"></i> Рейтинг</a>
+    </div>
+
+    <!-- Анимированный фон -->
+    <div class="animated-bg"></div>
+
+    <!-- HERO секция рейтинга -->
+    <section class="rating-hero">
+        <div class="hero-bg"></div>
+        <div class="hero-container">
+            <div class="hero-content reveal">
+                <h1>Рейтинг учеников 9А класса</h1>
+                <p>Актуальная информация об успеваемости и достижениях учащихся. Рейтинг формируется на основе текущих оценок и активности.</p>
+                <div class="last-updated">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>Последнее обновление: <span id="lastUpdateTime">Загрузка...</span></span>
+                </div>
+                
+                <!-- Кнопка на главную -->
+                <a href="index.html" class="home-btn" style="margin-right: 15px;">
+                    <i class="fas fa-arrow-left"></i> На главную
+                </a>
+                
+                <button onclick="updateData()" class="filter-btn">
+                    <i class="fas fa-sync-alt"></i> Обновить данные
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Основной контейнер -->
+    <div class="rating-container">
+        <!-- Фильтры и поиск -->
+        <div class="rating-filters reveal">
+            <div class="filter-group">
+                <label><i class="fas fa-sort-amount-down"></i> Сортировка</label>
+                <select id="sortFilter">
+                    <option value="score_desc">По убыванию баллов</option>
+                    <option value="score_asc">По возрастанию баллов</option>
+                    <option value="name_asc">По фамилии (А-Я)</option>
+                    <option value="name_desc">По фамилии (Я-А)</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label><i class="fas fa-search"></i> Поиск ученика</label>
+                <input type="text" id="searchInput" placeholder="Введите фамилию...">
+            </div>
+            <button onclick="applyFilters()" class="filter-btn">
+                <i class="fas fa-check"></i> Применить
+            </button>
+        </div>
+
+        <!-- Топ 3 ученика -->
+        <div class="top-three reveal" id="topThree">
+            <!-- Заполняется JavaScript -->
+        </div>
+
+        <!-- Полная таблица рейтинга -->
+        <div class="rating-table-container reveal">
+            <div class="rating-table-header">
+                <h2>Полный рейтинг учащихся 9А класса</h2>
+                <div class="total-students">
+                    <i class="fas fa-users"></i> Всего: <span id="totalStudents">0</span> учеников
+                </div>
+            </div>
+            
+            <div class="loading" id="loadingTable">
+                <div class="spinner"></div>
+                <p>Загрузка данных рейтинга из таблицы...</p>
+            </div>
+            
+            <!-- Контейнер для ошибки -->
+            <div class="error-container" id="errorContainer" style="display: none;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Ошибка загрузки данных</h3>
+                <p id="errorMessage">Не удалось загрузить данные из таблицы.</p>
+                <button onclick="loadStudentsData()" class="filter-btn" style="margin-top: 20px;">
+                    <i class="fas fa-redo"></i> Повторить загрузку
+                </button>
+            </div>
+            
+            <table class="rating-table" id="ratingTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th width="80">Место</th>
+                        <th width="80">Фото</th>
+                        <th>Ученик</th>
+                        <th width="120">Баллы</th>
+                        <th width="100">Динамика</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Заполняется JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Статистика -->
+        <div class="stats-container reveal">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-calculator"></i>
+                </div>
+                <div class="stat-value" id="avgScore">0</div>
+                <div class="stat-label">Средний балл</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <div class="stat-value" id="totalParticipants">0</div>
+                <div class="stat-label">Всего учеников</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-value" id="topScore">0</div>
+                <div class="stat-label">Максимальный балл</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="stat-value" id="quarter">1</div>
+                <div class="stat-label">Текущая четверть</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Кнопка обновления -->
+    <button onclick="updateData()" class="update-btn">
+        <i class="fas fa-sync-alt"></i> Обновить
+    </button>
+
+    <footer>
+        © Ладысь Алёна Александровна, 2026 • Рейтинг 9А класса
+    </footer>
+
+    <!-- Скрипт Toastify -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <script>
+    // Данные учеников
+    let studentsData = [];
+    let filteredStudents = [];
+
+    // Конфигурация
+    const CONFIG = {
+        // Используем прямой CSV URL
+        GOOGLE_SHEETS_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSoKvcFGb21qtR1ByKqVm1jFQkltgRF9SQgu03L2DN-aDj0l7B43kVLdfU23wjuzw/pub?gid=840845811&single=true&output=csv',
+        CLASS_NAME: "9А",
+        PHOTO_FOLDER: 'students/',
+        PHOTO_EXTENSION: '.jpg',
+        MAX_SCORE: 500
+    };
+
+    // Инициализация при загрузке страницы
+    document.addEventListener('DOMContentLoaded', async function() {
+        initNavigation();
+        initMobileMenu();
+        initFilters();
+        await loadStudentsData();
+        updateLastUpdated();
+        initScrollAnimations();
+        
+        // Автообновление каждые 5 минут
+        setInterval(updateData, 5 * 60 * 1000);
+    });
+
+    // Инициализация навигации
+    function initNavigation() {
+        const header = document.getElementById('header');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+    }
+
+    // Инициализация мобильного меню
+    function initMobileMenu() {
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+            mobileMenuBtn.innerHTML = mobileMenu.classList.contains('active') 
+                ? '<i class="fas fa-times"></i>' 
+                : '<i class="fas fa-bars"></i>';
+        });
+        
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            });
+        });
+        
+        document.addEventListener('click', (e) => {
+            if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                mobileMenu.classList.remove('active');
+                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            }
+        });
+    }
+
+    // Reveal анимация
+    function initScrollAnimations() {
+        const reveals = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('show');
+                    }, index * 100);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        reveals.forEach(el => observer.observe(el));
+    }
+
+    // УЛУЧШЕННЫЙ ПАРСИНГ CSV
+    async function loadStudentsData() {
+        showLoading(true);
+        hideError();
+        
+        try {
+            console.log('Загрузка данных из Google Sheets...');
+            
+            // Добавляем timestamp для предотвращения кеширования
+            const timestamp = new Date().getTime();
+            const url = `${CONFIG.GOOGLE_SHEETS_URL}&t=${timestamp}`;
+            
+            const response = await fetch(url, {
+                headers: {
+                    'Cache-Control': 'no-cache',
+                    'Pragma': 'no-cache'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Ошибка сервера: ${response.status}`);
+            }
+            
+            const csvText = await response.text();
+            
+            if (!csvText || csvText.trim().length === 0) {
+                throw new Error('Таблица пустая');
+            }
+            
+            console.log('CSV данные получены, первые 500 символов:', csvText.substring(0, 500));
+            
+            // Разбиваем на строки
+            const rows = csvText.split('\n').map(row => row.trim()).filter(row => row.length > 0);
+            console.log('Всего строк в CSV:', rows.length);
+            
+            if (rows.length < 2) {
+                throw new Error('Слишком мало данных в таблице');
+            }
+            
+            studentsData = [];
+            
+            // Ищем строку с заголовком и данные
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const cells = parseCSVRow(row);
+                
+                // Пропускаем пустые строки или строки с заголовками таблицы
+                if (cells.length < 2) continue;
+                
+                // Проверяем, содержит ли строка имя ученика
+                const nameCell = cells[0]?.trim();
+                const scoreCell = cells[1]?.trim();
+                
+                // Пропускаем строки заголовков
+                if (nameCell && (
+                    nameCell.toLowerCase().includes('фио') ||
+                    nameCell.toLowerCase().includes('ф.и.о') ||
+                    nameCell.toLowerCase().includes('ученик') ||
+                    nameCell.toLowerCase().includes('учащийся') ||
+                    nameCell.toLowerCase().includes('название') ||
+                    nameCell.toLowerCase().includes('мероприятие') ||
+                    nameCell === '1' || // номер строки
+                    nameCell === '№'
+                )) {
+                    console.log('Пропускаем заголовок:', nameCell);
+                    continue;
+                }
+                
+                // Пропускаем пустые имена
+                if (!nameCell || nameCell === '' || nameCell === '-') {
+                    continue;
+                }
+                
+                // Имя должно содержать хотя бы 2 символа
+                if (nameCell.length < 2) {
+                    continue;
+                }
+                
+                // Очищаем имя
+                const name = cleanName(nameCell);
+                
+                // Парсим баллы
+                let score = 0;
+                if (scoreCell) {
+                    // Пробуем разные форматы чисел
+                    const cleanScore = scoreCell.replace(/[^\d.,-]/g, '');
+                    score = parseFloat(cleanScore.replace(',', '.')) || 0;
+                }
+                
+                // Проверяем, что это действительно ученик (имя содержит фамилию и имя)
+                if (name.split(' ').length < 2) {
+                    console.log('Пропускаем, не похоже на ФИО:', name);
+                    continue;
+                }
+                
+                // Добавляем ученика
+                studentsData.push({
+                    id: studentsData.length + 1,
+                    name: name,
+                    score: Math.round(score),
+                    photo: getStudentPhoto(name),
+                    trend: calculateTrend(score),
+                    class: CONFIG.CLASS_NAME
+                });
+                
+                console.log(`Добавлен ученик ${studentsData.length}: ${name} - ${score} баллов`);
+            }
+            
+            console.log(`Загружено ${studentsData.length} учеников`);
+            
+            if (studentsData.length === 0) {
+                // Пробуем альтернативный парсинг
+                await tryAlternativeParsing(csvText);
+                return;
+            }
+            
+            processStudentsData();
+            
+        } catch (error) {
+            console.error('Ошибка загрузки данных:', error);
+            showError(`Не удалось загрузить данные: ${error.message}. Проверьте формат таблицы.`);
+            showLoading(false);
+        }
+    }
+
+    // Альтернативный метод парсинга
+    async function tryAlternativeParsing(csvText) {
+        console.log('Пробуем альтернативный парсинг...');
+        
+        const rows = csvText.split('\n').map(row => row.trim());
+        studentsData = [];
+        
+        // Проходим по всем строкам
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+            
+            // Пробуем разные разделители
+            const cells = row.split(/[,\t|]/).map(cell => cell.trim());
+            
+            // Ищем строки, содержащие русские буквы (фамилии)
+            const russianLettersRegex = /[А-Яа-яЁё]/;
+            
+            if (cells.length >= 2 && russianLettersRegex.test(cells[0])) {
+                const nameCell = cells[0];
+                const scoreCell = cells[1] || cells[2] || '0';
+                
+                // Пропускаем заголовки
+                if (nameCell.toLowerCase().includes('фио') || 
+                    nameCell.toLowerCase().includes('название')) {
+                    continue;
+                }
+                
+                const name = cleanName(nameCell);
+                
+                if (name.split(' ').length < 2) {
+                    continue;
+                }
+                
+                let score = 0;
+                if (scoreCell) {
+                    const cleanScore = scoreCell.replace(/[^\d.,-]/g, '');
+                    score = parseFloat(cleanScore.replace(',', '.')) || 0;
+                }
+                
+                studentsData.push({
+                    id: studentsData.length + 1,
+                    name: name,
+                    score: Math.round(score),
+                    photo: getStudentPhoto(name),
+                    trend: calculateTrend(score),
+                    class: CONFIG.CLASS_NAME
+                });
+            }
+        }
+        
+        if (studentsData.length === 0) {
+            throw new Error('Не удалось найти данные учеников в таблице');
+        }
+        
+        processStudentsData();
+    }
+
+    // Обработка данных учеников
+    function processStudentsData() {
+        // Сортируем по баллам (по убыванию)
+        studentsData.sort((a, b) => b.score - a.score);
+        
+        // Присваиваем ранги
+        studentsData.forEach((student, index) => {
+            student.rank = index + 1;
+        });
+        
+        filteredStudents = [...studentsData];
+        
+        // Обновляем отображение
+        renderTopThree();
+        renderTable();
+        updateStats();
+        showLoading(false);
+        
+        // Уведомление об успехе
+        Toastify({
+            text: `✅ Загружено ${studentsData.length} учеников`,
+            duration: 3000,
+            backgroundColor: "#10b981"
+        }).showToast();
+    }
+
+    // Парсинг CSV строки с учетом кавычек
+    function parseCSVRow(row) {
+        const result = [];
+        let current = '';
+        let inQuotes = false;
+        
+        for (let i = 0; i < row.length; i++) {
+            const char = row[i];
+            
+            if (char === '"') {
+                inQuotes = !inQuotes;
+            } else if (char === ',' && !inQuotes) {
+                result.push(current);
+                current = '';
+            } else {
+                current += char;
+            }
+        }
+        
+        result.push(current);
+        return result.map(cell => cell.trim());
+    }
+
+    // Очистка имени от лишних символов
+    function cleanName(rawName) {
+        return rawName
+            .replace(/["'«»]/g, '') // Убираем кавычки
+            .replace(/\s+/g, ' ') // Заменяем множественные пробелы на один
+            .trim()
+            .split(' ')
+            .map(word => {
+                if (word.length === 0) return '';
+                // Проверяем, все ли буквы в верхнем регистре (как в официальных документах)
+                if (word === word.toUpperCase()) {
+                    // Оставляем как есть (все заглавные) или преобразуем к нормальному виду
+                    return word.charAt(0) + word.slice(1).toLowerCase();
+                }
+                return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+            })
+            .join(' ');
+    }
+
+    // Получение пути к фото ученика
+    function getStudentPhoto(fullName) {
+        // Извлекаем фамилию (первое слово)
+        const lastName = fullName.split(' ')[0].toLowerCase();
+        
+        // Формируем путь к фото
+        const photoPath = `${CONFIG.PHOTO_FOLDER}${lastName}${CONFIG.PHOTO_EXTENSION}`;
+        
+        return photoPath;
+    }
+
+    // Расчет тренда на основе баллов
+    function calculateTrend(score) {
+        // Для реального приложения здесь должна быть логика сравнения с предыдущими результатами
+        // Пока используем случайный тренд
+        const random = Math.random();
+        if (random < 0.4) return 'up';
+        if (random < 0.7) return 'stable';
+        return 'down';
+    }
+
+    // Инициализация фильтров
+    function initFilters() {
+        document.getElementById('sortFilter').addEventListener('change', applyFilters);
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+    }
+
+    // Применение фильтров
+    function applyFilters() {
+        const sortFilter = document.getElementById('sortFilter').value;
+        const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+        
+        // Фильтрация по поиску
+        filteredStudents = studentsData.filter(student => {
+            return !searchQuery || student.name.toLowerCase().includes(searchQuery);
+        });
+        
+        // Сортировка
+        switch(sortFilter) {
+            case 'score_desc':
+                filteredStudents.sort((a, b) => b.score - a.score);
+                break;
+            case 'score_asc':
+                filteredStudents.sort((a, b) => a.score - b.score);
+                break;
+            case 'name_asc':
+                filteredStudents.sort((a, b) => a.name.localeCompare(b.name));
+                break;
+            case 'name_desc':
+                filteredStudents.sort((a, b) => b.name.localeCompare(a.name));
+                break;
+        }
+        
+        // Обновление рангов
+        filteredStudents.forEach((student, index) => {
+            student.filteredRank = index + 1;
+        });
+        
+        // Обновляем отображение
+        renderTopThree();
+        renderTable();
+        updateStats();
+    }
+
+    // Отображение топ-3 учеников
+    function renderTopThree() {
+        const topThreeContainer = document.getElementById('topThree');
+        const topStudents = filteredStudents.slice(0, 3);
+        
+        if (topStudents.length === 0) {
+            topThreeContainer.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #64748b;">
+                    <i class="fas fa-users" style="font-size: 60px; margin-bottom: 20px;"></i>
+                    <h3>Нет данных для отображения</h3>
+                    <p>Загрузите данные из таблицы</p>
+                </div>
+            `;
+            return;
+        }
+        
+        topThreeContainer.innerHTML = topStudents.map((student, index) => `
+            <div class="top-card ${index === 0 ? 'first' : index === 1 ? 'second' : 'third'}">
+                <div class="rank-badge">${index + 1}</div>
+                <img src="${student.photo}" 
+                     alt="${student.name}" 
+                     class="student-photo"
+                     onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"120\" height=\"120\" viewBox=\"0 0 120 120\"><rect width=\"120\" height=\"120\" fill=\"%23667eea\"/><text x=\"50%\" y=\"50%\" dy=\".3em\" text-anchor=\"middle\" fill=\"white\" font-size=\"40\" font-family=\"Arial\">${student.name.split(' ')[0].charAt(0)}${student.name.split(' ')[1]?.charAt(0) || ''}</text></svg>'">
+                <h3>${student.name}</h3>
+                <div class="score">${student.score} баллов</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${Math.min((student.score / CONFIG.MAX_SCORE) * 100, 100)}%"></div>
+                </div>
+                <div class="trend-cell ${student.trend === 'up' ? 'trend-up' : student.trend === 'down' ? 'trend-down' : 'trend-stable'}" style="margin-top: 10px;">
+                    ${student.trend === 'up' ? '↑ Повышение' : student.trend === 'down' ? '↓ Снижение' : '→ Стабильно'}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Отображение таблицы
+    function renderTable() {
+        const tableBody = document.getElementById('tableBody');
+        const totalStudents = document.getElementById('totalStudents');
+        
+        totalStudents.textContent = filteredStudents.length;
+        
+        if (filteredStudents.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 40px; color: #64748b;">
+                        <i class="fas fa-search" style="font-size: 40px; margin-bottom: 10px;"></i>
+                        <p>Не найдено учеников по вашему запросу</p>
+                        <button onclick="loadStudentsData()" class="filter-btn" style="margin-top: 20px;">
+                            <i class="fas fa-redo"></i> Загрузить данные
+                        </button>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+        
+        tableBody.innerHTML = filteredStudents.map(student => `
+            <tr>
+                <td class="rank-cell">${student.filteredRank || student.rank}</td>
+                <td class="photo-cell">
+                    <img src="${student.photo}" 
+                         alt="${student.name}" 
+                         class="student-photo-small"
+                         onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"50\" height=\"50\" viewBox=\"0 0 50 50\"><rect width=\"50\" height=\"50\" fill=\"%23667eea\"/><text x=\"50%\" y=\"50%\" dy=\".3em\" text-anchor=\"middle\" fill=\"white\" font-size=\"18\" font-family=\"Arial\">${student.name.split(' ')[0].charAt(0)}${student.name.split(' ')[1]?.charAt(0) || ''}</text></svg>'">
+                </td>
+                <td class="name-cell">
+                    <h4>${student.name}</h4>
+                    <div class="class-cell">${student.class} класс</div>
+                </td>
+                <td class="score-cell">${student.score}</td>
+                <td class="trend-cell ${student.trend === 'up' ? 'trend-up' : student.trend === 'down' ? 'trend-down' : 'trend-stable'}">
+                    ${student.trend === 'up' ? '↑ Повышение' : student.trend === 'down' ? '↓ Снижение' : '→ Стабильно'}
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    // Обновление статистики
+    function updateStats() {
+        const avgScore = document.getElementById('avgScore');
+        const totalParticipants = document.getElementById('totalParticipants');
+        const topScore = document.getElementById('topScore');
+        const quarter = document.getElementById('quarter');
+        
+        if (filteredStudents.length > 0) {
+            const scores = filteredStudents.map(s => s.score);
+            const average = scores.reduce((a, b) => a + b, 0) / scores.length;
+            const maxScore = Math.max(...scores);
+            
+            avgScore.textContent = average.toFixed(1);
+            totalParticipants.textContent = filteredStudents.length;
+            topScore.textContent = maxScore;
+            
+            // Определяем текущую четверть
+            const now = new Date();
+            const month = now.getMonth() + 1;
+            if (month >= 9 && month <= 11) quarter.textContent = "1";
+            else if (month >= 12 && month <= 2) quarter.textContent = "2";
+            else if (month >= 3 && month <= 5) quarter.textContent = "3";
+            else quarter.textContent = "4";
+        } else {
+            avgScore.textContent = "0.0";
+            totalParticipants.textContent = "0";
+            topScore.textContent = "0";
+        }
+    }
+
+    // Обновление времени последнего обновления
+    function updateLastUpdated() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('ru-RU', { 
+            hour: '2-digit', 
+            minute: '2-digit',
+            second: '2-digit'
+        });
+        const dateString = now.toLocaleDateString('ru-RU', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+        
+        document.getElementById('lastUpdateTime').textContent = `${dateString} ${timeString}`;
+    }
+
+    // Обновление данных
+    async function updateData() {
+        showLoading(true);
+        
+        try {
+            await loadStudentsData();
+            updateLastUpdated();
+            
+            Toastify({
+                text: "Данные успешно обновлены",
+                duration: 3000,
+                backgroundColor: "#10b981"
+            }).showToast();
+            
+        } catch (error) {
+            console.error('Ошибка обновления:', error);
+            Toastify({
+                text: `Ошибка: ${error.message}`,
+                duration: 5000,
+                backgroundColor: "#ef4444"
+            }).showToast();
+            showLoading(false);
+        }
+    }
+
+    // Управление отображением загрузки
+    function showLoading(isLoading) {
+        const loading = document.getElementById('loadingTable');
+        const table = document.getElementById('ratingTable');
+        const errorContainer = document.getElementById('errorContainer');
+        
+        if (isLoading) {
+            loading.style.display = 'block';
+            table.style.display = 'none';
+            errorContainer.style.display = 'none';
+        } else {
+            loading.style.display = 'none';
+            table.style.display = 'table';
+        }
+    }
+
+    // Показать ошибку
+    function showError(message) {
+        const errorContainer = document.getElementById('errorContainer');
+        const errorMessage = document.getElementById('errorMessage');
+        const table = document.getElementById('ratingTable');
+        const loading = document.getElementById('loadingTable');
+        
+        errorMessage.textContent = message;
+        errorContainer.style.display = 'block';
+        table.style.display = 'none';
+        loading.style.display = 'none';
+        
+        // Очищаем данные
+        studentsData = [];
+        filteredStudents = [];
+        renderTopThree();
+        renderTable();
+        updateStats();
+    }
+
+    // Скрыть ошибку
+    function hideError() {
+        const errorContainer = document.getElementById('errorContainer');
+        errorContainer.style.display = 'none';
+    }
+
+    // ДЕБАГ: функция для просмотра сырых данных CSV
+    async function debugCSV() {
+        try {
+            const response = await fetch(CONFIG.GOOGLE_SHEETS_URL);
+            const csvText = await response.text();
+            console.log('Сырые CSV данные:', csvText);
+            
+            // Показать первые 5 строк в консоли
+            const rows = csvText.split('\n').slice(0, 10);
+            rows.forEach((row, i) => {
+                console.log(`Строка ${i}:`, row);
+            });
+            
+            alert('Проверьте консоль браузера (F12) для просмотра данных');
+        } catch (error) {
+            console.error('Ошибка отладки:', error);
+            alert('Ошибка загрузки данных для отладки');
+        }
+    }
+
+    // Добавьте эту функцию кнопке для отладки
+    // В HTML можно добавить: <button onclick="debugCSV()">Отладка CSV</button>
+</script>
+</body>
+</html>
